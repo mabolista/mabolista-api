@@ -17,4 +17,4 @@ const sequelizeConnection = new Sequelize(
   }
 );
 
-export default sequelizeConnection;
+module.exports = sequelizeConnection;
