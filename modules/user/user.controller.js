@@ -3,6 +3,7 @@ const { generateToken } = require('../../helpers/jwtHelper');
 const { passwordHashing } = require('../../helpers/passwordHelper');
 const { responseData } = require('../../helpers/responseDataHelper');
 const { setPage } = require('../../middleware/pagination/paginationValidation');
+const { cloudinary } = require('../../utils/cloudinary');
 const {
   findAllUser,
   createUser,
@@ -148,4 +149,30 @@ const getUserById = async (req, res) => {
   }
 };
 
-module.exports = { getAllUser, register, login, editUser, getUserById };
+const uploadUserImage = async (req, res) => {
+  cloudinary.uploader.upload(
+    req.file.path,
+    { folder: 'mabol-media-staging/user' },
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res
+          .status(500)
+          .json(responseData(500, 'Internal Server Error', err, null));
+      }
+
+      return res
+        .status(201)
+        .json(responseData(201, 'Success upload image', null, result));
+    }
+  );
+};
+
+module.exports = {
+  getAllUser,
+  register,
+  login,
+  editUser,
+  getUserById,
+  uploadUserImage
+};
