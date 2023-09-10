@@ -45,7 +45,8 @@ const registerValidation = async (req, res, next) => {
         'string.base': `"Password Confirmation" should be a text type`,
         'string.empty': `Konfirmasi password tidak boleh kosong`,
         'string.min': `Konfirmasi Password setidaknya berisi 8 karakter`
-      })
+      }),
+      image: Joi.string().allow('').optional()
     });
 
     const { error } = schema.validate(req.body, { abortEarly: false });
@@ -184,7 +185,8 @@ const editUserValidation = async (req, res, next) => {
         'string.base': `"Password" should be a text type`,
         'string.empty': `Passsword tidak boleh kosong`,
         'string.min': `Password setidaknya berisi 8 karakter`
-      })
+      }),
+      image: Joi.string().allow('').optional()
     });
 
     const { error } = schema.validate(req.body, { abortEarly: false });

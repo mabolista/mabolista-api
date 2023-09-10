@@ -1,19 +1,29 @@
 const { Op } = require('sequelize');
 const User = require('../../core/database/models/UserModel');
 
-const createUser = async ({ name, email, phoneNumber, password }) => {
-  const user = await User.create({ name, email, phoneNumber, password });
+const createUser = async ({ name, email, phoneNumber, imageUrl, password }) => {
+  const user = await User.create({
+    name,
+    email,
+    phoneNumber,
+    imageUrl,
+    password
+  });
 
   return user.toJSON();
 };
 
-const updateUser = async (id, { name, email, phoneNumber, password }) => {
+const updateUser = async (
+  id,
+  { name, email, phoneNumber, imageUrl, password }
+) => {
   const currentUser = await User.findByPk(id);
 
   await currentUser.update({
     name,
     email,
     phoneNumber,
+    imageUrl,
     password
   });
 

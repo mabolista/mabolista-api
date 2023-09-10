@@ -18,6 +18,10 @@ module.exports = {
         allowNull: false,
         unique: true
       },
+      imageUrl: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       phoneNumber: {
         type: Sequelize.STRING,
         allowNull: false

@@ -3,7 +3,7 @@ const { generateToken } = require('../../helpers/jwtHelper');
 const { passwordHashing } = require('../../helpers/passwordHelper');
 const { responseData } = require('../../helpers/responseDataHelper');
 const { setPage } = require('../../middleware/pagination/paginationValidation');
-const { cloudinary } = require('../../utils/cloudinary');
+const { uploadImageCloudinary } = require('../../utils/cloudinary/uploadImage');
 const {
   findAllUser,
   createUser,
@@ -49,12 +49,24 @@ const register = async (req, res) => {
   try {
     const { name, email, phoneNumber, password } = req.body;
 
+    let imageUrl = '';
+
+    if (!req.file) {
+      imageUrl = '';
+    } else {
+      imageUrl = await uploadImageCloudinary(
+        req.file.path,
+        'mabol-media-staging/user'
+      );
+    }
+
     const hashedPassword = await passwordHashing(password);
 
     const payload = {
       name,
       email,
       phoneNumber,
+      imageUrl: imageUrl.secure_url,
       password: hashedPassword
     };
 
@@ -104,12 +116,24 @@ const editUser = async (req, res) => {
   try {
     const { name, email, phoneNumber, password } = req.body;
 
+    let imageUrl = '';
+
+    if (!req.file) {
+      imageUrl = '';
+    } else {
+      imageUrl = await uploadImageCloudinary(
+        req.file.path,
+        'mabol-media-staging/user'
+      );
+    }
+
     const { id } = req.params;
 
     const requestBody = {
       name,
       email,
       phoneNumber,
+      imageUrl: imageUrl.secure_url,
       password
     };
 
@@ -149,30 +173,10 @@ const getUserById = async (req, res) => {
   }
 };
 
-const uploadUserImage = async (req, res) => {
-  cloudinary.uploader.upload(
-    req.file.path,
-    { folder: 'mabol-media-staging/user' },
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        return res
-          .status(500)
-          .json(responseData(500, 'Internal Server Error', err, null));
-      }
-
-      return res
-        .status(201)
-        .json(responseData(201, 'Success upload image', null, result));
-    }
-  );
-};
-
 module.exports = {
   getAllUser,
   register,
   login,
   editUser,
-  getUserById,
-  uploadUserImage
+  getUserById
 };

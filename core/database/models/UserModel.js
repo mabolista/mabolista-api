@@ -20,6 +20,10 @@ User.init(
       allowNull: false,
       unique: true
     },
+    imageUrl: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: false

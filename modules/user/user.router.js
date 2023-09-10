@@ -22,9 +22,15 @@ const router = express.Router();
 
 router.get('/users', maxPageSizeValidation, getAllUser);
 router.get('/users/:id', getUserById);
-router.post('/register', registerValidation, register);
+router.post('/register', upload.single('image'), registerValidation, register);
 router.post('/login', loginValidation, login);
-router.put('/users/:id', authenticated, editUserValidation, editUser);
+router.put(
+  '/users/:id',
+  authenticated,
+  upload.single('image'),
+  editUserValidation,
+  editUser
+);
 router.post(
   '/users/upload-profile-image',
   upload.single('image'),
