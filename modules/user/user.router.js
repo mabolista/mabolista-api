@@ -31,10 +31,5 @@ router.put(
   editUserValidation,
   editUser
 );
-router.post(
-  '/users/upload-profile-image',
-  upload.single('image'),
-  uploadUserImage
-);
 
 module.exports = router;
