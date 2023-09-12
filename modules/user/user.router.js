@@ -4,8 +4,7 @@ const {
   register,
   editUser,
   getUserById,
-  login,
-  uploadUserImage
+  login
 } = require('./user.controller');
 const {
   registerValidation,
