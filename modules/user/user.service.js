@@ -57,7 +57,8 @@ const findAllUser = async (offset, pageSize) => {
 };
 
 const findUserById = async (id) => {
-  const user = await User.findByPk(id, {
+  const user = await User.findOne({
+    where: { [Op.and]: [{ id }, { deletedAt: { [Op.is]: null } }] },
     attributes: { exclude: ['password'] }
   });
 
