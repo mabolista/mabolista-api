@@ -9,7 +9,8 @@ const {
 const {
   registerValidation,
   editUserValidation,
-  loginValidation
+  loginValidation,
+  currentUserValidation
 } = require('../../middleware/validations/userValidation');
 const { authenticated } = require('../../middleware/auth/authorization');
 const {
@@ -20,12 +21,13 @@ const { upload } = require('../../middleware/file/multer');
 const router = express.Router();
 
 router.get('/users', maxPageSizeValidation, getAllUser);
-router.get('/users/:id', getUserById);
+router.get('/users/:id', currentUserValidation, getUserById);
 router.post('/register', upload.single('image'), registerValidation, register);
 router.post('/login', loginValidation, login);
 router.put(
   '/users/:id',
   authenticated,
+  currentUserValidation,
   upload.single('image'),
   editUserValidation,
   editUser
