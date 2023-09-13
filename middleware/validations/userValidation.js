@@ -3,7 +3,8 @@ const Joi = require('joi');
 const { responseData } = require('../../helpers/responseDataHelper');
 const {
   findUserByEmail,
-  findUserByEmailGetPassword
+  findUserByEmailGetPassword,
+  findUserById
 } = require('../../modules/user/user.service');
 const { passwordCompare } = require('../../helpers/passwordHelper');
 
@@ -14,10 +15,10 @@ const registerValidation = async (req, res, next) => {
     const { email, password, confirmPassword } = req.body;
 
     const schema = Joi.object({
-      name: Joi.string().trim().min(8).required().messages({
+      name: Joi.string().trim().min(3).required().messages({
         'string.base': `"Fullname" should be a text type`,
         'string.empty': `Masukkan nama lengkap`,
-        'string.min': `Nama setidaknya berisi 8 karakter`,
+        'string.min': `Nama setidaknya berisi 3 karakter`,
         'any.required': `Nama harus diinput`
       }),
       email: Joi.string()
@@ -36,15 +37,15 @@ const registerValidation = async (req, res, next) => {
         'string.min': `Nomor telepon setidaknya berisi 10 angka`,
         'any.required': `Nomor telepon harus diinput`
       }),
-      password: Joi.string().trim().min(8).required().messages({
+      password: Joi.string().trim().min(5).required().messages({
         'string.base': `"Password" should be a text type`,
         'string.empty': `Password tidak boleh kosong`,
-        'string.min': `Password setidaknya berisi 8 karakter`
+        'string.min': `Password setidaknya berisi 5 karakter`
       }),
-      confirmPassword: Joi.string().trim().min(8).required().messages({
+      confirmPassword: Joi.string().trim().min(5).required().messages({
         'string.base': `"Password Confirmation" should be a text type`,
         'string.empty': `Konfirmasi password tidak boleh kosong`,
-        'string.min': `Konfirmasi Password setidaknya berisi 8 karakter`
+        'string.min': `Konfirmasi Password setidaknya berisi 5 karakter`
       }),
       image: Joi.string().allow('').optional()
     });
@@ -104,10 +105,10 @@ const loginValidation = async (req, res, next) => {
           'string.empty': `Email tidak boleh kosong`,
           'any.required': `Email harus diinput`
         }),
-      password: Joi.string().trim().min(8).required().messages({
+      password: Joi.string().trim().min(5).required().messages({
         'string.base': `"Password" should be a text type`,
         'string.empty': `Password tidak boleh kosong`,
-        'string.min': `Password setidaknya berisi 8 karakter`
+        'string.min': `Password setidaknya berisi 5 karakter`
       })
     });
 
@@ -152,6 +153,7 @@ const loginValidation = async (req, res, next) => {
       .json(responseData(500, 'Internal Server Error', error, null));
   }
 };
+
 const editUserValidation = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -159,10 +161,10 @@ const editUserValidation = async (req, res, next) => {
     const { id } = req.params;
 
     const schema = Joi.object({
-      name: Joi.string().trim().min(8).required().messages({
+      name: Joi.string().trim().min(3).required().messages({
         'string.base': `"Fullname" should be a text type`,
         'string.empty': `Masukkan nama lengkap`,
-        'string.min': `Nama setidaknya berisi 8 karakter`,
+        'string.min': `Nama setidaknya berisi 3 karakter`,
         'any.required': `Nama harus diinput`
       }),
       email: Joi.string()
@@ -181,10 +183,10 @@ const editUserValidation = async (req, res, next) => {
         'string.min': `Nomor telepon setidaknya berisi 10 angka`,
         'any.required': `Nomor telepon harus diinput`
       }),
-      password: Joi.string().trim().min(8).required().messages({
+      password: Joi.string().trim().min(5).required().messages({
         'string.base': `"Password" should be a text type`,
         'string.empty': `Passsword tidak boleh kosong`,
-        'string.min': `Password setidaknya berisi 8 karakter`
+        'string.min': `Password setidaknya berisi 5 karakter`
       }),
       image: Joi.string().allow('').optional()
     });
@@ -198,6 +200,10 @@ const editUserValidation = async (req, res, next) => {
     }
 
     const userEmail = await findUserByEmail(email);
+
+    if (!userEmail) {
+      return next();
+    }
 
     if (userEmail.id.toString() !== id) {
       errorResponse = {
@@ -216,4 +222,34 @@ const editUserValidation = async (req, res, next) => {
   }
 };
 
-module.exports = { registerValidation, editUserValidation, loginValidation };
+const currentUserValidation = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await findUserById(id);
+
+    if (user === null) {
+      errorResponse = {
+        message: 'User tidak ditemukan',
+        path: ['user']
+      };
+
+      return res
+        .status(400)
+        .json(responseData(400, 'Bad User Input', errorResponse, null));
+    }
+
+    next();
+  } catch (error) {
+    return res
+      .status(500)
+      .json(responseData(500, 'Internal Server Error', error, null));
+  }
+};
+
+module.exports = {
+  registerValidation,
+  editUserValidation,
+  loginValidation,
+  currentUserValidation
+};
