@@ -137,14 +137,6 @@ const editUser = async (req, res) => {
       password
     };
 
-    const currentUser = await findUserById(id);
-
-    if (!currentUser) {
-      return res
-        .status(404)
-        .json(responseData(404, 'Not Found', 'User tidak ditemukan', null));
-    }
-
     const user = await updateUser(id, requestBody);
 
     return res
