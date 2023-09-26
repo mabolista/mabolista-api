@@ -15,4 +15,15 @@ const uploadImageCloudinary = (reqFilePath, folder) => {
   return upload;
 };
 
-module.exports = { uploadImageCloudinary };
+const deleteImageCloudinary = (cloudinaryId) => {
+  const image = cloudinary.uploader.destroy(cloudinaryId, (err, result) => {
+    if (err) {
+      return err;
+    }
+
+    return result;
+  });
+  return image;
+};
+
+module.exports = { uploadImageCloudinary, deleteImageCloudinary };
