@@ -21,8 +21,6 @@ const userAdminRegister = async (req, res) => {
 
     const newUserAdmin = await createEmployee(payload);
 
-    console.log('user-admin-new: ', newUserAdmin);
-
     const token = generateToken(newUserAdmin);
 
     const data = {
