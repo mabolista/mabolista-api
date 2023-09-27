@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const userRouter = require('./modules/user/user.router');
 const userAdminRouter = require('./modules/employee/employee.router');
+const benefitRouter = require('./modules/benefit/benefit.router');
 
 const app = express();
 
@@ -35,6 +36,7 @@ const PORT = process.env.PORT || 8080;
 
 app.use(userRouter);
 app.use(userAdminRouter);
+app.use(benefitRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
