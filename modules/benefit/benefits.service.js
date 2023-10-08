@@ -1,5 +1,22 @@
 const { Op } = require('sequelize');
 const Benefit = require('../../core/database/models/Benefit');
+// const { Event, Benefit } = require('../../core/database/models');
+const Event = require('../../core/database/models/Event');
+
+// TODO: deprecated, just test the eager loading
+const cobaEventBenefit = async () => {
+  const joinEventBenefit = await Event.findAll({
+    include: [
+      {
+        model: Benefit,
+        required: false,
+        as: 'benefits'
+      }
+    ]
+  });
+
+  console.log('join event benefit: ', joinEventBenefit);
+};
 
 const createBenefit = async ({ name, imageUrl, imagePublicId }) => {
   const benefit = await Benefit.create({
@@ -75,5 +92,6 @@ module.exports = {
   updateBenefit,
   findAllBenefit,
   findBenefitById,
-  deleteBenefit
+  deleteBenefit,
+  cobaEventBenefit
 };

@@ -18,9 +18,11 @@ const {
   createBenefitValidation,
   editBenefitValidation
 } = require('../../middleware/validations/benefitValidation');
+const { getJoinEventBenefit } = require('./benefits.controller');
 
 const router = express.Router();
 
+router.get('/admin/joineb', getJoinEventBenefit);
 router.get(
   '/admin/benefits',
   userAdminAuthenticated,
