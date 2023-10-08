@@ -1,14 +1,14 @@
 const { Op } = require('sequelize');
-const Benefit = require('../../core/database/models/Benefit');
+const models = require('../../core/database/models');
 // const { Event, Benefit } = require('../../core/database/models');
-const Event = require('../../core/database/models/Event');
+// const Event = require('../../core/database/models/Event');
 
 // TODO: deprecated, just test the eager loading
 const cobaEventBenefit = async () => {
-  const joinEventBenefit = await Event.findAll({
+  const joinEventBenefit = await models.Event.findAll({
     include: [
       {
-        model: Benefit,
+        model: models.Benefit,
         required: false,
         as: 'benefits'
       }
@@ -16,10 +16,11 @@ const cobaEventBenefit = async () => {
   });
 
   console.log('join event benefit: ', joinEventBenefit);
+  return joinEventBenefit;
 };
 
 const createBenefit = async ({ name, imageUrl, imagePublicId }) => {
-  const benefit = await Benefit.create({
+  const benefit = await models.Benefit.create({
     name,
     imageUrl,
     imagePublicId
@@ -29,7 +30,7 @@ const createBenefit = async ({ name, imageUrl, imagePublicId }) => {
 };
 
 const findBenefitById = async (id) => {
-  const benefit = await Benefit.findOne({
+  const benefit = await models.Benefit.findOne({
     where: { [Op.and]: [{ id }, { deletedAt: { [Op.is]: null } }] }
   });
 
@@ -41,7 +42,7 @@ const findBenefitById = async (id) => {
 };
 
 const updateBenefit = async (id, { name, imageUrl, imagePublicId }) => {
-  const currentBenefit = await Benefit.findByPk(id);
+  const currentBenefit = await models.Benefit.findByPk(id);
 
   await currentBenefit.update({
     name,
@@ -50,13 +51,13 @@ const updateBenefit = async (id, { name, imageUrl, imagePublicId }) => {
     updatedAt: Date.now()
   });
 
-  const updatedBenefit = await Benefit.findByPk(id);
+  const updatedBenefit = await models.Benefit.findByPk(id);
 
   return updatedBenefit;
 };
 
 const findAllBenefit = async (offset, pageSize) => {
-  const benefits = await Benefit.findAndCountAll({
+  const benefits = await models.Benefit.findAndCountAll({
     where: {
       deletedAt: {
         [Op.is]: null
@@ -75,14 +76,14 @@ const findAllBenefit = async (offset, pageSize) => {
 };
 
 const deleteBenefit = async (id) => {
-  await Benefit.update(
+  await models.Benefit.update(
     {
       deletedAt: Date.now()
     },
     { where: { id } }
   );
 
-  const benefit = await Benefit.findByPk(id);
+  const benefit = await models.Benefit.findByPk(id);
 
   return benefit;
 };
