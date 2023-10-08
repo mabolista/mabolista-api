@@ -1,8 +1,8 @@
 const { Op } = require('sequelize');
-const User = require('../../core/database/models/UserModel');
+const models = require('../../core/database/models');
 
 const createUser = async ({ name, email, phoneNumber, imageUrl, password }) => {
-  const user = await User.create({
+  const user = await models.User.create({
     name,
     email,
     phoneNumber,
@@ -17,7 +17,7 @@ const updateUser = async (
   id,
   { name, email, phoneNumber, imageUrl, password }
 ) => {
-  const currentUser = await User.findByPk(id);
+  const currentUser = await models.User.findByPk(id);
 
   await currentUser.update({
     name,
@@ -27,7 +27,7 @@ const updateUser = async (
     password
   });
 
-  const updatedUser = await User.findByPk(id, {
+  const updatedUser = await models.User.findByPk(id, {
     attributes: {
       exclude: ['password']
     }
@@ -37,7 +37,8 @@ const updateUser = async (
 };
 
 const findAllUser = async (offset, pageSize) => {
-  const users = await User.findAndCountAll({
+  console.log('test-userlist: ');
+  const users = await models.User.findAndCountAll({
     where: {
       deletedAt: {
         [Op.is]: null
@@ -49,6 +50,8 @@ const findAllUser = async (offset, pageSize) => {
     limit: pageSize
   });
 
+  console.log('test-userlist: ', users);
+
   if (users === null) {
     return null;
   }
@@ -57,7 +60,7 @@ const findAllUser = async (offset, pageSize) => {
 };
 
 const findUserById = async (id) => {
-  const user = await User.findOne({
+  const user = await models.User.findOne({
     where: { [Op.and]: [{ id }, { deletedAt: { [Op.is]: null } }] },
     attributes: { exclude: ['password'] }
   });
@@ -70,7 +73,7 @@ const findUserById = async (id) => {
 };
 
 const findUserByEmail = async (email) => {
-  const user = await User.findOne({
+  const user = await models.User.findOne({
     where: { email },
     attributes: ['id', 'email']
   });
@@ -83,7 +86,7 @@ const findUserByEmail = async (email) => {
 };
 
 const findUserByEmailGetPassword = async (email) => {
-  const user = await User.findOne({
+  const user = await models.User.findOne({
     where: { email },
     attributes: ['id', 'email', 'password']
   });
