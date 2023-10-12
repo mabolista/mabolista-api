@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const userRouter = require('./modules/user/user.router');
 const userAdminRouter = require('./modules/employee/employee.router');
 const benefitRouter = require('./modules/benefit/benefit.router');
+const eventAdminRouter = require('./modules/event/event.router');
 
 const app = express();
 
@@ -37,7 +38,8 @@ const PORT = process.env.PORT || 8080;
 app.use(userRouter);
 app.use(userAdminRouter);
 app.use(benefitRouter);
+app.use(eventAdminRouter);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+  console.log(`🚀 Server ready at http://localhost:${PORT}`)
 });
