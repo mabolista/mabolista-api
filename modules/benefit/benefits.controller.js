@@ -4,7 +4,6 @@ const {
   uploadImageCloudinary,
   deleteImageCloudinary
 } = require('../../utils/cloudinary/uploadImage');
-const { cobaEventBenefit } = require('./benefits.service');
 const {
   findAllBenefit,
   createBenefit,
@@ -16,27 +15,6 @@ const {
 let errorResponse = {
   message: '',
   path: ['']
-};
-
-const getJoinEventBenefit = async (req, res) => {
-  try {
-    const data = await cobaEventBenefit();
-
-    return res
-      .status(201)
-      .json(
-        responseData(
-          201,
-          'Berhasil mendapatkan data list join event benefit',
-          null,
-          data
-        )
-      );
-  } catch (error) {
-    return res
-      .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
-  }
 };
 
 const getAllBenefit = async (req, res) => {
@@ -219,6 +197,5 @@ module.exports = {
   editBenefit,
   getAllBenefit,
   getBenefitById,
-  removeBenefit,
-  getJoinEventBenefit
+  removeBenefit
 };
