@@ -37,7 +37,6 @@ const updateUser = async (
 };
 
 const findAllUser = async (offset, pageSize) => {
-  console.log('test-userlist: ');
   const users = await models.User.findAndCountAll({
     where: {
       deletedAt: {
@@ -49,8 +48,6 @@ const findAllUser = async (offset, pageSize) => {
     offset,
     limit: pageSize
   });
-
-  console.log('test-userlist: ', users);
 
   if (users === null) {
     return null;
