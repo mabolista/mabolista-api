@@ -12,6 +12,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
+      imageUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        field: 'image_url'
+      },
+      imagePublicId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        field: 'image_public_id'
+      },
       description: {
         type: DataTypes.TEXT,
         allowNull: false
@@ -22,12 +32,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       gmapsUrl: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         field: 'gmaps_url'
       },
       notes: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: true
       },
       playerPrice: {
         type: DataTypes.DECIMAL(15, 2).UNSIGNED,
