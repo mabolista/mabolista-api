@@ -29,13 +29,13 @@ const getAllEvent = async (req, res) => {
 
     const offset = setPage(pageSize, page);
 
-    const { rows, count } = await findAllEvent(offset, pageSize);
+    const { rows } = await findAllEvent(offset, pageSize);
 
     const metaData = {
       currentPage: page,
       pageSize,
-      total: count.toString(),
-      totalPage: Math.ceil(count / pageSize).toString()
+      total: rows.length.toString(),
+      totalPage: Math.ceil(rows.length / pageSize).toString()
     };
 
     const data = {
