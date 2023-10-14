@@ -129,12 +129,14 @@ const editUser = async (req, res) => {
 
     const { id } = req.params;
 
+    const hashedPassword = await passwordHashing(password);
+
     const requestBody = {
       name,
       email,
       phoneNumber,
       imageUrl: imageUrl.secure_url,
-      password
+      password: hashedPassword
     };
 
     const user = await updateUser(id, requestBody);
