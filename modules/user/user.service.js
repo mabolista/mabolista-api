@@ -95,11 +95,35 @@ const findUserByEmailGetPassword = async (email) => {
   return user.toJSON();
 };
 
+const deleteUser = async (id) => {
+  const existingUser = await models.User.findOne({
+    where: { [Op.and]: [{ id }, { deletedAt: { [Op.is]: null } }] },
+    attributes: { exclude: ['password'] }
+  });
+
+  if (existingUser === null) {
+    return null;
+  }
+
+  await models.User.update(
+    {
+      deletedAt: Date.now()
+    },
+    { where: { id } }
+  );
+
+  return models.User.findOne({
+    where: { id },
+    attributes: { exclude: ['password'] }
+  });
+};
+
 module.exports = {
   createUser,
   updateUser,
   findAllUser,
   findUserById,
   findUserByEmail,
-  findUserByEmailGetPassword
+  findUserByEmailGetPassword,
+  deleteUser
 };

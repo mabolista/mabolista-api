@@ -9,8 +9,14 @@ const {
   createUser,
   updateUser,
   findUserById,
-  findUserByEmail
+  findUserByEmail,
+  deleteUser
 } = require('./user.service');
+
+let errorResponse = {
+  message: '',
+  path: ['']
+};
 
 const getAllUser = async (req, res) => {
   try {
@@ -167,10 +173,38 @@ const getUserById = async (req, res) => {
   }
 };
 
+const removeUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await deleteUser(id);
+
+    if (!user) {
+      errorResponse = {
+        message: 'User tidak ditemukan',
+        path: ['User']
+      };
+
+      return res
+        .status(404)
+        .json(responseData(404, 'Not Found', errorResponse, null));
+    }
+
+    return res
+      .status(200)
+      .json(responseData(200, 'Berhasil menghapus user', null, user));
+  } catch (error) {
+    return res
+      .status(500)
+      .json(responseData(500, 'Internal Server Error', error, null));
+  }
+};
+
 module.exports = {
   getAllUser,
   register,
   login,
   editUser,
-  getUserById
+  getUserById,
+  removeUser
 };
