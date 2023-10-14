@@ -29,18 +29,8 @@ const createEventValidation = async (req, res, next) => {
         'string.min': `Lokasi setidaknya berisi 3 karakter`,
         'any.required': `Lokasi harus diinput`
       }),
-      gmapsUrl: Joi.string().trim().min(3).required().messages({
-        'string.base': `"Google Maps Url" should be a text type`,
-        'string.empty': `Masukkan Google Maps Url event`,
-        'string.min': `Google Maps Url setidaknya berisi 3 karakter`,
-        'any.required': `Google Maps Url harus diinput`
-      }),
-      notes: Joi.string().trim().min(3).required().messages({
-        'string.base': `"Notes" should be a text type`,
-        'string.empty': `Masukkan catatan event`,
-        'string.min': `Catatan setidaknya berisi 3 karakter`,
-        'any.required': `Catatan harus diinput`
-      }),
+      gmapsUrl: Joi.string().allow(''),
+      notes: Joi.string().allow(''),
       playerPrice: Joi.number().min(0).required().messages({
         'number.base': `"Player Price" should be a number type`,
         'number.empty': `Masukkan Harga Pemain`,
@@ -150,18 +140,8 @@ const editEventValidation = async (req, res, next) => {
         'string.min': `Lokasi setidaknya berisi 3 karakter`,
         'any.required': `Lokasi harus diinput`
       }),
-      gmapsUrl: Joi.string().trim().min(3).required().messages({
-        'string.base': `"Google Maps Url" should be a text type`,
-        'string.empty': `Masukkan Google Maps Url event`,
-        'string.min': `Google Maps Url setidaknya berisi 3 karakter`,
-        'any.required': `Google Maps Url harus diinput`
-      }),
-      notes: Joi.string().trim().min(3).required().messages({
-        'string.base': `"Notes" should be a text type`,
-        'string.empty': `Masukkan catatan event`,
-        'string.min': `Catatan setidaknya berisi 3 karakter`,
-        'any.required': `Catatan harus diinput`
-      }),
+      gmapsUrl: Joi.string().allow(''),
+      notes: Joi.string().allow(''),
       playerPrice: Joi.number().min(0).required().messages({
         'number.base': `"Player Price" should be a number type`,
         'number.empty': `Masukkan Harga Pemain`,
