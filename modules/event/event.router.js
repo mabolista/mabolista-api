@@ -1,6 +1,7 @@
 const express = require('express');
 const {
-  userAdminAuthenticated
+  userAdminAuthenticated,
+  authenticated
 } = require('../../middleware/auth/authorization');
 const {
   maxPageSizeValidation
@@ -20,6 +21,7 @@ const {
 
 const router = express.Router();
 
+// Start of Internal API Side Router
 router.get(
   '/admin/events',
   userAdminAuthenticated,
@@ -42,5 +44,11 @@ router.put(
   editEvent
 );
 router.delete('/admin/events/:id', userAdminAuthenticated, removeEvent);
+// End of Internal API Side Router
+
+// Start of Public API Side Router
+router.get('/events', authenticated, maxPageSizeValidation, getAllEvent);
+router.get('/events/:id', authenticated, getEventById);
+// End of Public API Side Router
 
 module.exports = router;
