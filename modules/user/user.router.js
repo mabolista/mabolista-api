@@ -4,7 +4,8 @@ const {
   register,
   editUser,
   getUserById,
-  login
+  login,
+  removeUser
 } = require('./user.controller');
 const {
   registerValidation,
@@ -12,7 +13,10 @@ const {
   loginValidation,
   currentUserValidation
 } = require('../../middleware/validations/userValidation');
-const { authenticated } = require('../../middleware/auth/authorization');
+const {
+  authenticated,
+  userAdminAuthenticated
+} = require('../../middleware/auth/authorization');
 const {
   maxPageSizeValidation
 } = require('../../middleware/pagination/paginationValidation');
@@ -20,6 +24,7 @@ const { upload } = require('../../middleware/file/multer');
 
 const router = express.Router();
 
+// Start of User Endpoint of Public API
 router.get('/users', maxPageSizeValidation, getAllUser);
 router.get('/users/:id', currentUserValidation, getUserById);
 router.post('/register', upload.single('image'), registerValidation, register);
@@ -32,5 +37,22 @@ router.put(
   editUserValidation,
   editUser
 );
+// End of User Endpoint of Public API
+
+// Start of User Endpoint of Internal API
+router.get(
+  '/admin/users',
+  userAdminAuthenticated,
+  maxPageSizeValidation,
+  getAllUser
+);
+router.get(
+  '/admin/users/:id',
+  userAdminAuthenticated,
+  currentUserValidation,
+  getUserById
+);
+router.delete('/admin/users/:id', userAdminAuthenticated, removeUser);
+// End of User Endpoint of Internal API
 
 module.exports = router;
