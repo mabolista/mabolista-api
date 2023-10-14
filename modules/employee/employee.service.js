@@ -1,8 +1,8 @@
 const { Op } = require('sequelize');
-const Employee = require('../../core/database/models/Employee');
+const models = require('../../core/database/models');
 
 const createEmployee = async ({ fullname, email, password }) => {
-  const user = await Employee.create({
+  const user = await models.Employee.create({
     fullname,
     email,
     password
@@ -12,7 +12,7 @@ const createEmployee = async ({ fullname, email, password }) => {
 };
 
 const findEmployeeById = async (id) => {
-  const userAdmin = await Employee.findOne({
+  const userAdmin = await models.Employee.findOne({
     where: { [Op.and]: [{ id }, { deletedAt: { [Op.is]: null } }] },
     attributes: { exclude: ['password'] }
   });
@@ -25,7 +25,7 @@ const findEmployeeById = async (id) => {
 };
 
 const findEmployeeByEmail = async (email) => {
-  const employee = await Employee.findOne({
+  const employee = await models.Employee.findOne({
     where: { email },
     attributes: ['id', 'email']
   });
@@ -38,7 +38,7 @@ const findEmployeeByEmail = async (email) => {
 };
 
 const findEmployeeByEmailGetPassword = async (email) => {
-  const employee = await Employee.findOne({
+  const employee = await models.Employee.findOne({
     where: { email },
     attributes: ['id', 'email', 'password']
   });
