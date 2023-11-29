@@ -10,7 +10,11 @@ const {
   getAllEvent,
   addNewEvent,
   editEvent,
-  removeEvent
+  removeEvent,
+  userJoinToEvent,
+  userLeftEvent,
+  userJoinToEventByAdmin,
+  userLeftEventByAdmin
 } = require('./event.controller');
 const { getEventById } = require('./event.controller');
 const { upload } = require('../../middleware/file/multer');
@@ -44,11 +48,23 @@ router.put(
   editEvent
 );
 router.delete('/admin/events/:id', userAdminAuthenticated, removeEvent);
+router.post(
+  '/admin/events/join-event',
+  userAdminAuthenticated,
+  userJoinToEventByAdmin
+);
+router.post(
+  '/admin/events/left-event',
+  userAdminAuthenticated,
+  userLeftEventByAdmin
+);
 // End of Internal API Side Router
 
 // Start of Public API Side Router
-router.get('/events', authenticated, maxPageSizeValidation, getAllEvent);
-router.get('/events/:id', authenticated, getEventById);
+router.get('/events', maxPageSizeValidation, getAllEvent);
+router.get('/events/:id', getEventById);
+router.post('/events/join-event', authenticated, userJoinToEvent);
+router.post('/events/left-event', authenticated, userLeftEvent);
 // End of Public API Side Router
 
 module.exports = router;
