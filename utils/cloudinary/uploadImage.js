@@ -1,7 +1,7 @@
 const { cloudinary } = require('./cloudinary');
 
-const uploadImageCloudinary = (reqFilePath, folder) => {
-  const upload = cloudinary.uploader.upload(
+const uploadImageCloudinary = async (reqFilePath, folder) => {
+  const upload = await cloudinary.uploader.upload(
     reqFilePath,
     { folder },
     (err, result) => {
