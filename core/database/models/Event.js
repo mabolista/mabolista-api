@@ -90,6 +90,15 @@ module.exports = (sequelize, DataTypes) => {
       as: 'benefits',
       foreignKey: 'event_id'
     });
+    Event.belongsToMany(models.User, {
+      through: 'EventUser',
+      as: 'users',
+      foreignKey: 'event_id'
+    });
+    Event.hasOne(models.EventQuota, {
+      foreignKey: 'eventId',
+      as: 'eventQuota'
+    });
   };
   return Event;
 };
