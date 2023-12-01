@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const { jwtDecode } = require('jwt-decode');
 const { findUserById } = require('../modules/user/user.service');
 const { findEmployeeById } = require('../modules/employee/employee.service');
 
@@ -28,4 +29,13 @@ const verifyToken = (token, isUserAdmin) => {
   return user;
 };
 
-module.exports = { generateToken, verifyToken };
+const decodeJwt = (authToken) => {
+  if (!authToken) return null;
+
+  const token = authToken && authToken.split(' ')[1];
+  const decode = jwtDecode(token);
+
+  return decode;
+};
+
+module.exports = { generateToken, verifyToken, decodeJwt };

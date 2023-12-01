@@ -16,6 +16,14 @@ const findAllEvent = async (offset, pageSize) => {
         model: models.Benefit,
         required: false,
         as: 'benefits'
+      },
+      {
+        model: models.EventQuota,
+        attributes: {
+          exclude: ['id', 'eventId', 'createdAt', 'updatedAt']
+        },
+        required: false,
+        as: 'eventQuota'
       }
     ]
   });
@@ -35,6 +43,14 @@ const findEventById = async (id) => {
         model: models.Benefit,
         required: false,
         as: 'benefits'
+      },
+      {
+        model: models.EventQuota,
+        attributes: {
+          exclude: ['id', 'eventId', 'createdAt', 'updatedAt']
+        },
+        required: false,
+        as: 'eventQuota'
       }
     ]
   });

@@ -68,6 +68,18 @@ const createEventValidation = async (req, res, next) => {
           'string.min': `Waktu selesai setidaknya berisi 3 karakter`,
           'any.required': `Waktu selesai harus diinput`
         }),
+      playerQty: Joi.number().min(1).required().messages({
+        'number.base': `"Player Quantity" should be a number type`,
+        'number.empty': `Masukkan quota pemain`,
+        'number.min': `Quota pemain tidak boleh kurang dari 1`,
+        'any.required': `Quota pemain harus dimasukkan`
+      }),
+      keeperQty: Joi.number().min(1).required().messages({
+        'number.base': `"Keeper Quantity" should be a number type`,
+        'number.empty': `Masukkan quota kiper`,
+        'number.min': `Quota kiper tidak boleh kurang dari 1`,
+        'any.required': `Quota kiper harus dimasukkan`
+      }),
       benefitIds: Joi.array().items(Joi.number()).required()
     });
 
@@ -179,6 +191,18 @@ const editEventValidation = async (req, res, next) => {
           'string.min': `Waktu selesai setidaknya berisi 3 karakter`,
           'any.required': `Waktu selesai harus diinput`
         }),
+      playerQty: Joi.number().min(1).required().messages({
+        'number.base': `"Player Quantity" should be a number type`,
+        'number.empty': `Masukkan quota pemain`,
+        'number.min': `Quota pemain tidak boleh kurang dari 1`,
+        'any.required': `Quota pemain harus dimasukkan`
+      }),
+      keeperQty: Joi.number().min(1).required().messages({
+        'number.base': `"Keeper Quantity" should be a number type`,
+        'number.empty': `Masukkan quota kiper`,
+        'number.min': `Quota kiper tidak boleh kurang dari 1`,
+        'any.required': `Quota kiper harus dimasukkan`
+      }),
       benefitIds: Joi.array().items(Joi.number()).required()
     });
 
