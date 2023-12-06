@@ -1,12 +1,12 @@
 /* eslint-disable consistent-return */
 const Joi = require('joi');
-const { responseData } = require('../../helpers/responseDataHelper');
+const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
 const {
   findUserByEmail,
   findUserByEmailGetPassword,
   findUserById
 } = require('../../modules/user/user.service');
-const { passwordCompare } = require('../../helpers/passwordHelper');
+const { passwordCompare } = require('../../shared-v1/helpers/passwordHelper');
 
 let errorResponse = {};
 

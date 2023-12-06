@@ -5,12 +5,12 @@ const {
   updateEvent,
   deleteEvent
 } = require('./event.service');
-const { responseData } = require('../../helpers/responseDataHelper');
+const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
 const { findEventById } = require('./event.service');
 const {
   uploadImageCloudinary,
   deleteImageCloudinary
-} = require('../../utils/cloudinary/uploadImage');
+} = require('../../shared-v1/utils/cloudinary/uploadImage');
 const { sequelize } = require('../../core/database/models');
 const {
   createEventBenefit,
@@ -26,8 +26,10 @@ const {
   findEventQuotaByEventId,
   updateEventQuota
 } = require('../event_quota/eventQuota.service');
-const { decodeJwt } = require('../../helpers/jwtHelper');
-const { isWithinThreedays } = require('../../utils/isWithinThreeDays');
+const { decodeJwt } = require('../../shared-v1/helpers/jwtHelper');
+const {
+  isWithinThreedays
+} = require('../../shared-v1/utils/isWithinThreeDays');
 
 let errorResponse = {
   message: '',

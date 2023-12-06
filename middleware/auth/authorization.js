@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
-const { verifyToken } = require('../../helpers/jwtHelper');
-const { responseData } = require('../../helpers/responseDataHelper');
+const { verifyToken } = require('../../shared-v1/helpers/jwtHelper');
+const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
 
 let errorResponse = {};
 
