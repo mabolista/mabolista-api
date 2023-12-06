@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 const Joi = require('joi');
-const { responseData } = require('../../helpers/responseDataHelper');
-const { passwordCompare } = require('../../helpers/passwordHelper');
+const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
+const { passwordCompare } = require('../../shared-v1/helpers/passwordHelper');
 const {
   findEmployeeByEmail,
   findEmployeeByEmailGetPassword,

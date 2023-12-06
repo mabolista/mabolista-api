@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { responseData } = require('../../helpers/responseDataHelper');
+const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
 
 let errorResponse = {};
 

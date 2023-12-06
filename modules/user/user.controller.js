@@ -1,9 +1,11 @@
 /* eslint-disable consistent-return */
-const { generateToken } = require('../../helpers/jwtHelper');
-const { passwordHashing } = require('../../helpers/passwordHelper');
-const { responseData } = require('../../helpers/responseDataHelper');
+const { generateToken } = require('../../shared-v1/helpers/jwtHelper');
+const { passwordHashing } = require('../../shared-v1/helpers/passwordHelper');
+const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
 const { setPage } = require('../../middleware/pagination/paginationValidation');
-const { uploadImageCloudinary } = require('../../utils/cloudinary/uploadImage');
+const {
+  uploadImageCloudinary
+} = require('../../shared-v1/utils/cloudinary/uploadImage');
 const {
   findAllUser,
   createUser,

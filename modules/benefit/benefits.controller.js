@@ -1,9 +1,9 @@
-const { responseData } = require('../../helpers/responseDataHelper');
+const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
 const { setPage } = require('../../middleware/pagination/paginationValidation');
 const {
   uploadImageCloudinary,
   deleteImageCloudinary
-} = require('../../utils/cloudinary/uploadImage');
+} = require('../../shared-v1/utils/cloudinary/uploadImage');
 const {
   findAllBenefit,
   createBenefit,

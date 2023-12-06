@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 const Joi = require('joi');
-const { responseData } = require('../../helpers/responseDataHelper');
+const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
 const { findBenefitById } = require('../../modules/benefit/benefits.service');
 
 let errorResponse = {};
