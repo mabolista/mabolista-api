@@ -2,10 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const userRouter = require('./modules/user/user.router');
-const userAdminRouter = require('./modules/employee/employee.router');
-const benefitRouter = require('./modules/benefit/benefit.router');
-const eventAdminRouter = require('./modules/event/event.router');
+const router = require('./route/index');
 
 const app = express();
 
@@ -31,10 +28,7 @@ app.get('/', (req, res) => {
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 
-app.use(userRouter);
-app.use(userAdminRouter);
-app.use(benefitRouter);
-app.use(eventAdminRouter);
+app.use(router);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server ready at http://localhost:${PORT}`);

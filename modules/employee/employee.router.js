@@ -18,7 +18,7 @@ const router = express.Router();
 router.post('/admin/register', userAdminRegisterValidation, userAdminRegister);
 router.post('/admin/login', userAdminLoginValidation, userAdminLogin);
 router.get(
-  '/admin/users/:id',
+  '/admin/detail/:id',
   userAdminAuthenticated,
   currentUserAdminValidation,
   getUserAdminById
