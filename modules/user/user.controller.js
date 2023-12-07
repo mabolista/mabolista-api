@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 const { generateToken } = require('../../shared-v1/helpers/jwtHelper');
 const { passwordHashing } = require('../../shared-v1/helpers/passwordHelper');
 const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
@@ -14,11 +13,8 @@ const {
   findUserByEmail,
   deleteUser
 } = require('./user.service');
-
-let errorResponse = {
-  message: '',
-  path: ['']
-};
+const { errorStatusCode, errorCode } = require('../../shared-v1/constants');
+const AppError = require('../../shared-v1/helpers/AppError');
 
 const getAllUser = async (req, res) => {
   try {
@@ -47,9 +43,18 @@ const getAllUser = async (req, res) => {
         responseData(201, 'Berhasil mendapatkan data list user', null, data)
       );
   } catch (error) {
-    res
+    console.error(error.stack);
+
+    return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -93,9 +98,18 @@ const register = async (req, res) => {
       .status(201)
       .json(responseData(201, 'User berhasil terdaftar', null, data));
   } catch (error) {
+    console.error(error.stack);
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -116,7 +130,18 @@ const login = async (req, res) => {
       .status(201)
       .json(responseData(201, 'Berhasil login', null, data));
   } catch (error) {
-    res.status(500).json(500, 'Internal Server Error', error, null);
+    console.error(error.stack);
+
+    return res
+      .status(500)
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -153,9 +178,18 @@ const editUser = async (req, res) => {
       .status(201)
       .json(responseData(201, 'User berhasil update', null, user));
   } catch (error) {
+    console.error(error.stack);
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -169,9 +203,18 @@ const getUserById = async (req, res) => {
       .status(201)
       .json(responseData(201, 'Berhasil mendapatkan data user', null, user));
   } catch (error) {
+    console.error(error.stack);
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -182,23 +225,35 @@ const removeUser = async (req, res) => {
     const user = await deleteUser(id);
 
     if (!user) {
-      errorResponse = {
-        message: 'User tidak ditemukan',
-        path: ['User']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Not Found', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'User tidak ditemukan'
+      );
     }
 
     return res
       .status(200)
       .json(responseData(200, 'Berhasil menghapus user', null, user));
   } catch (error) {
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 

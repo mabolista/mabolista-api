@@ -1,8 +1,8 @@
 /* eslint-disable consistent-return */
 const { verifyToken } = require('../../shared-v1/helpers/jwtHelper');
 const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
-
-let errorResponse = {};
+const AppError = require('../../shared-v1/helpers/AppError');
+const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 
 const authenticated = async (req, res, next) => {
   try {
@@ -13,20 +13,33 @@ const authenticated = async (req, res, next) => {
     const tokenVerified = await verifyToken(token, false);
 
     if (tokenVerified === null) {
-      errorResponse = {
-        message: 'Unauthorized access this feature',
-        path: ['authorization']
-      };
-      return res
-        .status(401)
-        .json(responseData(401, 'Unauthorized', errorResponse, null));
+      throw new AppError(
+        errorCode.UNAUTHORIZED,
+        errorStatusCode.UNAUTHENTICATED,
+        'Unauthorized access this service'
+      );
     }
 
     next();
-  } catch (error) {
+  } catch (err) {
+    console.error(err.stack);
+
+    if (err instanceof AppError) {
+      return res
+        .status(401)
+        .json(responseData(err.code, err.message, err, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          err,
+          null
+        )
+      );
   }
 };
 
@@ -39,20 +52,33 @@ const userAdminAuthenticated = async (req, res, next) => {
     const tokenVerified = await verifyToken(token, true);
 
     if (tokenVerified === null) {
-      errorResponse = {
-        message: 'Unauthorized access this feature',
-        path: ['authorization']
-      };
-      return res
-        .status(401)
-        .json(responseData(401, 'Unauthorized', errorResponse, null));
+      throw new AppError(
+        errorCode.UNAUTHORIZED,
+        errorStatusCode.UNAUTHENTICATED,
+        'Unauthorized access this service'
+      );
     }
 
     next();
-  } catch (error) {
+  } catch (err) {
+    console.error(err.stack);
+
+    if (err instanceof AppError) {
+      return res
+        .status(401)
+        .json(responseData(err.code, err.message, err, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          err,
+          null
+        )
+      );
   }
 };
 

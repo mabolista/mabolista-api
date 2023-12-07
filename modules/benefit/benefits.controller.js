@@ -11,8 +11,10 @@ const {
   findBenefitById,
   deleteBenefit
 } = require('./benefits.service');
+const AppError = require('../../shared-v1/helpers/AppError');
+const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 
-let errorResponse = {
+const errorResponse = {
   message: '',
   path: ['']
 };
@@ -44,9 +46,24 @@ const getAllBenefit = async (req, res) => {
         responseData(201, 'Berhasil mendapatkan data list benefit', null, data)
       );
   } catch (error) {
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -75,9 +92,24 @@ const addBenefit = async (req, res) => {
       .status(201)
       .json(responseData(201, 'Berhasil membuat benefit baru', null, benefit));
   } catch (error) {
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -91,14 +123,11 @@ const editBenefit = async (req, res) => {
     const existingBenefit = await findBenefitById(id);
 
     if (!existingBenefit) {
-      errorResponse = {
-        message: 'Benefit tidak ditemukan',
-        path: ['benefit']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Bad Request', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Benefit tidak ditemukan'
+      );
     }
 
     if (!req.file) {
@@ -124,9 +153,24 @@ const editBenefit = async (req, res) => {
       .status(201)
       .json(responseData(201, 'Berhasil edit benefit', null, benefit));
   } catch (error) {
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -137,14 +181,11 @@ const getBenefitById = async (req, res) => {
     const benefit = await findBenefitById(id);
 
     if (benefit === null) {
-      errorResponse = {
-        message: 'Benefit tidak ditemukan',
-        path: ['benefit']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Bad Request', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Benefit tidak ditemukan'
+      );
     }
 
     return res
@@ -153,9 +194,24 @@ const getBenefitById = async (req, res) => {
         responseData(201, 'Berhasil mendapatkan data benefit', null, benefit)
       );
   } catch (error) {
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -166,14 +222,11 @@ const removeBenefit = async (req, res) => {
     const existingBenefit = await findBenefitById(id);
 
     if (existingBenefit === null) {
-      errorResponse = {
-        message: 'Benefit tidak ditemukan',
-        path: ['benefit']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Bad Request', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Benefit tidak ditemukan'
+      );
     }
 
     const benefit = await deleteBenefit(id);
@@ -186,9 +239,24 @@ const removeBenefit = async (req, res) => {
         responseData(201, 'Berhasil menghapus data benefit', null, benefit)
       );
   } catch (error) {
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
