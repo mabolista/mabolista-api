@@ -7,8 +7,8 @@ const {
   findUserById
 } = require('../../modules/user/user.service');
 const { passwordCompare } = require('../../shared-v1/helpers/passwordHelper');
-
-let errorResponse = {};
+const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
+const AppError = require('../../shared-v1/helpers/AppError');
 
 const registerValidation = async (req, res, next) => {
   try {
@@ -53,40 +53,51 @@ const registerValidation = async (req, res, next) => {
     const { error } = schema.validate(req.body, { abortEarly: false });
 
     if (error) {
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad User Input', error.details[0], null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_USER_INPUT,
+        error.details[0].message
+      );
     }
 
     const userEmail = await findUserByEmail(email);
 
     if (userEmail) {
-      errorResponse = {
-        message: 'Email telah terdaftar',
-        path: ['email']
-      };
-
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad Request', errorResponse, null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Email telah terdaftar'
+      );
     }
 
     if (confirmPassword !== password) {
-      errorResponse = {
-        message: 'Confirm password tidak match dengan password',
-        path: ['confirm_password']
-      };
-
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad Request', errorResponse, null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_USER_INPUT,
+        'Confirm password tidak match dengan password'
+      );
     }
 
     next();
   } catch (err) {
+    console.error(err.stack);
+
+    if (err instanceof AppError) {
+      return res
+        .status(400)
+        .json(responseData(err.code, err.message, err, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', err, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          err,
+          null
+        )
+      );
   }
 };
 
@@ -115,42 +126,53 @@ const loginValidation = async (req, res, next) => {
     const { error } = schema.validate(req.body, { abortEarly: false });
 
     if (error) {
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad User Input', error.details[0], null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_USER_INPUT,
+        error.details[0].message
+      );
     }
 
     const user = await findUserByEmailGetPassword(email);
 
     if (user === null) {
-      errorResponse = {
-        message: 'User belum terdaftar',
-        path: ['email']
-      };
-
-      return res
-        .status(401)
-        .json(responseData(401, 'Unauthorized', errorResponse, null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'User belum terdaftar'
+      );
     }
 
     const userPassword = await passwordCompare(password, user.password);
 
     if (userPassword === false) {
-      errorResponse = {
-        message: 'Password salah',
-        path: ['password']
-      };
-
-      return res
-        .status(401)
-        .json(responseData(401, 'Unauthorized', errorResponse, null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Password salah'
+      );
     }
 
     next();
-  } catch (error) {
+  } catch (err) {
+    console.error(err.stack);
+
+    if (err instanceof AppError) {
+      return res
+        .status(400)
+        .json(responseData(err.code, err.message, err, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          err,
+          null
+        )
+      );
   }
 };
 
@@ -194,9 +216,11 @@ const editUserValidation = async (req, res, next) => {
     const { error } = schema.validate(req.body, { abortEarly: false });
 
     if (error) {
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad User Input', error.details[0], null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_USER_INPUT,
+        error.details[0].message
+      );
     }
 
     const userEmail = await findUserByEmail(email);
@@ -206,19 +230,33 @@ const editUserValidation = async (req, res, next) => {
     }
 
     if (userEmail.id.toString() !== id) {
-      errorResponse = {
-        message: 'Email telah terdaftar',
-        path: ['email']
-      };
-
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad Request', errorResponse, null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Email telah terdaftar'
+      );
     }
 
     next();
   } catch (err) {
-    return res.json(responseData(500, 'Internal Server Error', err, null));
+    console.error(err.stack);
+
+    if (err instanceof AppError) {
+      return res
+        .status(400)
+        .json(responseData(err.code, err.message, err, null));
+    }
+
+    return res
+      .status(500)
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          err,
+          null
+        )
+      );
   }
 };
 
@@ -229,21 +267,33 @@ const currentUserValidation = async (req, res, next) => {
     const user = await findUserById(id);
 
     if (user === null) {
-      errorResponse = {
-        message: 'User tidak ditemukan',
-        path: ['user']
-      };
-
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad User Input', errorResponse, null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'User tidak ditemukan'
+      );
     }
 
     next();
-  } catch (error) {
+  } catch (err) {
+    console.error(err.stack);
+
+    if (err instanceof AppError) {
+      return res
+        .status(400)
+        .json(responseData(err.code, err.message, err, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          err,
+          null
+        )
+      );
   }
 };
 

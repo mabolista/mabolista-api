@@ -6,6 +6,8 @@ const {
   findEmployeeById,
   findEmployeeByEmail
 } = require('./employee.service');
+const AppError = require('../../shared-v1/helpers/AppError');
+const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 
 const userAdminRegister = async (req, res) => {
   try {
@@ -32,9 +34,22 @@ const userAdminRegister = async (req, res) => {
       .status(201)
       .json(responseData(201, 'User berhasil terdaftar', null, data));
   } catch (error) {
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -55,7 +70,22 @@ const userAdminLogin = async (req, res) => {
       .status(201)
       .json(responseData(201, 'Berhasil login', null, data));
   } catch (error) {
-    return res.status(500).json(500, 'Internal Server Error', error, null);
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
+    return res
+      .status(500)
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -69,9 +99,22 @@ const getUserAdminById = async (req, res) => {
       .status(201)
       .json(responseData(201, 'Berhasil mendapatkan data user', null, user));
   } catch (error) {
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 

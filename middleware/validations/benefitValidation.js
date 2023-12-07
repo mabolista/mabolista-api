@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
-
-let errorResponse = {};
+const AppError = require('../../shared-v1/helpers/AppError');
+const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 
 const createBenefitValidation = async (req, res, next) => {
   try {
@@ -18,27 +18,41 @@ const createBenefitValidation = async (req, res, next) => {
     const { error } = schema.validate(req.body, { abortEarly: false });
 
     if (error) {
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad User Input', error.details[0], null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_USER_INPUT,
+        error.details[0].message
+      );
     }
 
     if (!req.file) {
-      errorResponse = {
-        message: 'Image wajib diisi',
-        path: ['image']
-      };
-
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad User Input', errorResponse, null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_USER_INPUT,
+        'Image wajib diisi'
+      );
     }
 
     return next();
   } catch (err) {
+    console.error(err.stack);
+
+    if (err instanceof AppError) {
+      return res
+        .status(400)
+        .json(responseData(err.code, err.message, err, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', err, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          err,
+          null
+        )
+      );
   }
 };
 
@@ -57,16 +71,33 @@ const editBenefitValidation = async (req, res, next) => {
     const { error } = schema.validate(req.body, { abortEarly: false });
 
     if (error) {
-      return res
-        .status(400)
-        .json(responseData(400, 'Bad User Input', error.details[0], null));
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_USER_INPUT,
+        error.details[0].message
+      );
     }
 
     return next();
   } catch (err) {
+    console.error(err.stack);
+
+    if (err instanceof AppError) {
+      return res
+        .status(400)
+        .json(responseData(err.code, err.message, err, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', err, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          err,
+          null
+        )
+      );
   }
 };
 

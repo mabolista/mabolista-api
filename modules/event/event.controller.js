@@ -30,11 +30,9 @@ const { decodeJwt } = require('../../shared-v1/helpers/jwtHelper');
 const {
   isWithinThreedays
 } = require('../../shared-v1/utils/isWithinThreeDays');
+const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
+const AppError = require('../../shared-v1/helpers/AppError');
 
-let errorResponse = {
-  message: '',
-  path: ['']
-};
 let t;
 
 // Admin Dashboard
@@ -89,9 +87,18 @@ const getAllEvent = async (req, res) => {
         responseData(200, 'Berhasil mendapatkan data event list', null, data)
       );
   } catch (error) {
+    console.error(error.stack);
+
     return res
       .status(500)
-      .json(responseData(500, 'Internal Server Error', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -101,14 +108,11 @@ const getEventById = async (req, res) => {
     let event = await findEventById(id);
 
     if (event === null) {
-      errorResponse = {
-        message: 'Event tidak ditemukan',
-        path: ['event']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Event not found', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Event tidak ditemukan'
+      );
     }
 
     event = {
@@ -138,6 +142,14 @@ const getEventById = async (req, res) => {
       .status(200)
       .json(responseData(200, 'Sucess get event data', null, event));
   } catch (error) {
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
       .json(responseData(500, 'Internal Server Error', error, null));
@@ -217,9 +229,19 @@ const addNewEvent = async (req, res) => {
       .json(responseData(201, 'Success create new event', null, result));
   } catch (error) {
     await t.rollback();
+
+    console.error(error.stack);
+
     return res
       .status(500)
-      .json(responseData(500, 'INTERNAL SERVER ERROR', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -248,14 +270,11 @@ const editEvent = async (req, res) => {
     const existingEventQuota = await findEventQuotaByEventId(id);
 
     if (!existingEvent) {
-      errorResponse = {
-        message: 'Event not found',
-        path: ['event']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Event tidak ditemukan', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Event not found'
+      );
     }
 
     if (!req.file) {
@@ -283,21 +302,11 @@ const editEvent = async (req, res) => {
       const usageQty = existingPlayerQty - playerAvailableQty;
 
       if (playerQty < usageQty) {
-        errorResponse = {
-          message: 'Invalid player quantity',
-          path: ['event']
-        };
-
-        return res
-          .status(400)
-          .json(
-            responseData(
-              400,
-              'Quantity player tidak bisa kurang dari quantity player yang sudah digunakan',
-              errorResponse,
-              null
-            )
-          );
+        throw new AppError(
+          errorCode.BAD_REQUEST,
+          errorStatusCode.BAD_DATA_VALIDATION,
+          'Quantity player tidak bisa kurang dari quantity player yang sudah digunakan'
+        );
       }
 
       playerAvailableQty = playerQty - usageQty;
@@ -313,21 +322,11 @@ const editEvent = async (req, res) => {
       const usageQty = existingKeeperQty - keeperAvailableQty;
 
       if (keeperQty < usageQty) {
-        errorResponse = {
-          message: 'Invalid keeper quantity',
-          path: ['event']
-        };
-
-        return res
-          .status(400)
-          .json(
-            responseData(
-              400,
-              'Quantity keeper tidak bisa kurang dari quantity keeper yang sudah digunakan',
-              errorResponse,
-              null
-            )
-          );
+        throw new AppError(
+          errorCode.BAD_REQUEST,
+          errorStatusCode.BAD_DATA_VALIDATION,
+          'Quantity keeper tidak bisa kurang dari quantity keeper yang sudah digunakan'
+        );
       }
 
       keeperAvailableQty = keeperQty - usageQty;
@@ -380,6 +379,15 @@ const editEvent = async (req, res) => {
       .json(responseData(201, 'Berhasil mengedit data event', null, event));
   } catch (error) {
     t.rollback();
+
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
       .json(responseData(500, 'INTERNAL SERVER ERROR', error, null));
@@ -392,14 +400,11 @@ const removeEvent = async (req, res) => {
     const exsitingEvent = await findEventById(id);
 
     if (!exsitingEvent) {
-      errorResponse = {
-        message: 'Event not found',
-        path: ['event']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Event tidak ditemukan', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Event tidak ditemukan'
+      );
     }
 
     t = await sequelize.transaction();
@@ -417,6 +422,15 @@ const removeEvent = async (req, res) => {
       .json(responseData(201, 'Berhasil menghapus data event', null, event));
   } catch (error) {
     t.rollback();
+
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
       .json(responseData(500, 'INTERNAL SERVER ERROR', error, null));
@@ -432,32 +446,19 @@ const userJoinToEventByAdmin = async (req, res) => {
     const eventDate = new Date(existingEvent.eventDate);
 
     if (!existingEvent) {
-      errorResponse = {
-        message: 'Event not found',
-        path: ['event']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Event tidak ditemukan', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Event tidak ditemukan'
+      );
     }
 
     if (eventDate < today) {
-      errorResponse = {
-        message: 'Bad request error',
-        path: ['event_user']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(
-            400,
-            'Tidak dapat bergabung dengan event ini karena jadwal telah lewat',
-            errorResponse,
-            null
-          )
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Tidak dapat bergabung dengan event ini karena jadwal telah lewat'
+      );
     }
 
     const existingEventUser = await findEventUserByEventIdAndUserId(
@@ -466,21 +467,11 @@ const userJoinToEventByAdmin = async (req, res) => {
     );
 
     if (existingEventUser) {
-      errorResponse = {
-        message: 'Bad request error',
-        path: ['event_user']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(
-            400,
-            'User telah bergabung ke event ini',
-            errorResponse,
-            null
-          )
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'User telah bergabung ke event ini'
+      );
     }
 
     const existingEventQuota = await findEventQuotaByEventId(eventId);
@@ -488,39 +479,22 @@ const userJoinToEventByAdmin = async (req, res) => {
     let { playerAvailableQty, keeperAvailableQty } = existingEventQuota;
 
     if (playerPosition !== 'P' && playerPosition !== 'GK') {
-      errorResponse = {
-        message: 'Bad request error',
-        path: ['event']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(400, 'Player position unknown', errorResponse, null)
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Player position unknown'
+      );
     }
 
     t = await sequelize.transaction();
 
     if (playerPosition === 'P') {
       if (playerAvailableQty < 1) {
-        errorResponse = {
-          message: 'Available event quantity is out',
-          path: ['event']
-        };
-
-        t.commit();
-
-        return res
-          .status(400)
-          .json(
-            responseData(
-              400,
-              'Kuantitas player telah habis',
-              errorResponse,
-              null
-            )
-          );
+        throw new AppError(
+          errorCode.BAD_REQUEST,
+          errorStatusCode.BAD_DATA_VALIDATION,
+          'Kuantitas player telah habis'
+        );
       }
 
       await addUserToEvent(eventId, userId, playerPosition, t);
@@ -542,23 +516,11 @@ const userJoinToEventByAdmin = async (req, res) => {
 
     if (playerPosition === 'GK') {
       if (keeperAvailableQty < 1) {
-        errorResponse = {
-          message: 'Available event quantity is out',
-          path: ['event']
-        };
-
-        t.commit();
-
-        return res
-          .status(400)
-          .json(
-            responseData(
-              400,
-              'Kuantitas keeper telah habis',
-              errorResponse,
-              null
-            )
-          );
+        throw new AppError(
+          errorCode.BAD_REQUEST,
+          errorStatusCode.BAD_DATA_VALIDATION,
+          'Kuantitas keeper telah habis'
+        );
       }
 
       await addUserToEvent(eventId, userId, playerPosition, t);
@@ -595,9 +557,24 @@ const userJoinToEventByAdmin = async (req, res) => {
   } catch (error) {
     t.rollback();
 
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'INTERNAL SERVER ERROR', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -608,14 +585,11 @@ const userLeftEventByAdmin = async (req, res) => {
     const existingEvent = await findEventById(eventId);
 
     if (!existingEvent) {
-      errorResponse = {
-        message: 'Event not found',
-        path: ['event']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Event tidak ditemukan', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Event tidak ditemukan'
+      );
     }
 
     const existingEventUser = await findEventUserByEventIdAndUserId(
@@ -624,21 +598,11 @@ const userLeftEventByAdmin = async (req, res) => {
     );
 
     if (!existingEventUser) {
-      errorResponse = {
-        message: 'Kamu belum bergabung dengan event ini',
-        path: ['event_user']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(
-            400,
-            'User belum bergabung dengan event ini',
-            errorResponse,
-            null
-          )
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Kamu belum bergabung dengan event ini'
+      );
     }
 
     const existingEventQuota = await findEventQuotaByEventId(eventId);
@@ -648,16 +612,11 @@ const userLeftEventByAdmin = async (req, res) => {
       existingEventUser.playerPosition !== 'P' &&
       existingEventUser.playerPosition !== 'GK'
     ) {
-      errorResponse = {
-        message: 'Bad request error',
-        path: ['event']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(400, 'Player position unknown', errorResponse, null)
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Player position unknown'
+      );
     }
 
     t = await sequelize.transaction();
@@ -708,11 +667,27 @@ const userLeftEventByAdmin = async (req, res) => {
   } catch (error) {
     t.rollback();
 
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'INTERNAL SERVER ERROR', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
+
 // User Mabolista Member
 const userJoinToEvent = async (req, res) => {
   try {
@@ -724,34 +699,21 @@ const userJoinToEvent = async (req, res) => {
     const existingEvent = await findEventById(eventId);
 
     if (!existingEvent) {
-      errorResponse = {
-        message: 'Event not found',
-        path: ['event']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Event tidak ditemukan', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Event tidak ditemukan'
+      );
     }
 
     const eventDate = new Date(existingEvent.eventDate);
 
     if (eventDate < today) {
-      errorResponse = {
-        message: 'Bad request error',
-        path: ['event_user']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(
-            400,
-            'Tidak dapat bergabung dengan event ini karena jadwal telah lewat',
-            errorResponse,
-            null
-          )
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Tidak dapat bergabung dengan event ini karena jadwal telah lewat'
+      );
     }
 
     const existingEventUser = await findEventUserByEventIdAndUserId(
@@ -760,21 +722,11 @@ const userJoinToEvent = async (req, res) => {
     );
 
     if (existingEventUser) {
-      errorResponse = {
-        message: 'Bad request error',
-        path: ['event_user']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(
-            400,
-            'User telah bergabung ke event ini',
-            errorResponse,
-            null
-          )
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'User telah bergabung ke event ini'
+      );
     }
 
     const existingEventQuota = await findEventQuotaByEventId(eventId);
@@ -782,39 +734,22 @@ const userJoinToEvent = async (req, res) => {
     let { playerAvailableQty, keeperAvailableQty } = existingEventQuota;
 
     if (playerPosition !== 'P' && playerPosition !== 'GK') {
-      errorResponse = {
-        message: 'Bad request error',
-        path: ['event']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(400, 'Player position unknown', errorResponse, null)
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Player position unknown'
+      );
     }
 
     t = await sequelize.transaction();
 
     if (playerPosition === 'P') {
       if (playerAvailableQty < 1) {
-        errorResponse = {
-          message: 'Available event quantity is out',
-          path: ['event']
-        };
-
-        t.commit();
-
-        return res
-          .status(400)
-          .json(
-            responseData(
-              400,
-              'Kuantitas player telah habis',
-              errorResponse,
-              null
-            )
-          );
+        throw new AppError(
+          errorCode.BAD_REQUEST,
+          errorStatusCode.BAD_DATA_VALIDATION,
+          'Kuantitas player telah habis'
+        );
       }
 
       await addUserToEvent(eventId, userId, playerPosition, t);
@@ -836,23 +771,11 @@ const userJoinToEvent = async (req, res) => {
 
     if (playerPosition === 'GK') {
       if (keeperAvailableQty < 1) {
-        errorResponse = {
-          message: 'Available event quantity is out',
-          path: ['event']
-        };
-
-        t.commit();
-
-        return res
-          .status(400)
-          .json(
-            responseData(
-              400,
-              'Kuantitas keeper telah habis',
-              errorResponse,
-              null
-            )
-          );
+        throw new AppError(
+          errorCode.BAD_REQUEST,
+          errorStatusCode.BAD_DATA_VALIDATION,
+          'Kuantitas keeper telah habis'
+        );
       }
 
       await addUserToEvent(eventId, userId, playerPosition, t);
@@ -889,9 +812,24 @@ const userJoinToEvent = async (req, res) => {
   } catch (error) {
     t.rollback();
 
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'INTERNAL SERVER ERROR', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
@@ -906,14 +844,11 @@ const userLeftEvent = async (req, res) => {
     const existingEvent = await findEventById(eventId);
 
     if (!existingEvent) {
-      errorResponse = {
-        message: 'Event not found',
-        path: ['event']
-      };
-
-      return res
-        .status(404)
-        .json(responseData(404, 'Event tidak ditemukan', errorResponse, null));
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Event tidak ditemukan'
+      );
     }
 
     const existingEventUser = await findEventUserByEventIdAndUserId(
@@ -922,60 +857,30 @@ const userLeftEvent = async (req, res) => {
     );
 
     if (!existingEventUser) {
-      errorResponse = {
-        message: 'Kamu belum bergabung dengan event ini',
-        path: ['event_user']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(
-            400,
-            'User belum bergabung dengan event ini',
-            errorResponse,
-            null
-          )
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Kamu belum bergabung dengan event ini'
+      );
     }
 
     if (isWithinThreedays(new Date(existingEvent.eventDate))) {
-      errorResponse = {
-        message: "Can't leave event",
-        path: ['event']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(
-            400,
-            'Kamu tidak dapat keluar event dalam H-3 dari tanggal event',
-            errorResponse,
-            null
-          )
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Kamu tidak dapat keluar event dalam H-3 dari tanggal event'
+      );
     }
 
     if (
       new Date(existingEvent.eventDate).toLocaleDateString() <=
       today.toLocaleString()
     ) {
-      errorResponse = {
-        message: "Can't leave event",
-        path: ['event']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(
-            400,
-            'Kamu tidak dapat keluar event karena tanggal event telah lewat atau hari ini',
-            errorResponse,
-            null
-          )
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Kamu tidak dapat keluar event karena tanggal event telah lewat atau hari ini'
+      );
     }
 
     const existingEventQuota = await findEventQuotaByEventId(eventId);
@@ -985,16 +890,11 @@ const userLeftEvent = async (req, res) => {
       existingEventUser.playerPosition !== 'P' &&
       existingEventUser.playerPosition !== 'GK'
     ) {
-      errorResponse = {
-        message: 'Bad request error',
-        path: ['event']
-      };
-
-      return res
-        .status(400)
-        .json(
-          responseData(400, 'Player position unknown', errorResponse, null)
-        );
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'Player position unknown'
+      );
     }
 
     t = await sequelize.transaction();
@@ -1045,9 +945,24 @@ const userLeftEvent = async (req, res) => {
   } catch (error) {
     t.rollback();
 
+    console.error(error.stack);
+
+    if (error instanceof AppError) {
+      return res
+        .status(error.code)
+        .json(responseData(error.code, error.message, error, null));
+    }
+
     return res
       .status(500)
-      .json(responseData(500, 'INTERNAL SERVER ERROR', error, null));
+      .json(
+        responseData(
+          errorCode.INTENAL_SERVER_ERROR,
+          errorStatusCode.INTERNAL_SERVER_ERROR,
+          error,
+          null
+        )
+      );
   }
 };
 
