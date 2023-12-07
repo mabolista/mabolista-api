@@ -14,11 +14,6 @@ const {
 const AppError = require('../../shared-v1/helpers/AppError');
 const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 
-const errorResponse = {
-  message: '',
-  path: ['']
-};
-
 const getAllBenefit = async (req, res) => {
   try {
     const { page } = req.query;
