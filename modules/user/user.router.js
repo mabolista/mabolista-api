@@ -26,11 +26,11 @@ const router = express.Router();
 
 // Start of User Endpoint of Public API
 router.get('/users', maxPageSizeValidation, getAllUser);
-router.get('/users/:id', currentUserValidation, getUserById);
+router.get('/users/detail', authenticated, currentUserValidation, getUserById);
 router.post('/register', upload.single('image'), registerValidation, register);
 router.post('/login', loginValidation, login);
 router.put(
-  '/users/:id',
+  '/users/edit',
   authenticated,
   currentUserValidation,
   upload.single('image'),

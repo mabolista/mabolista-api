@@ -9,6 +9,7 @@ const {
 const { passwordCompare } = require('../../shared-v1/helpers/passwordHelper');
 const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 const AppError = require('../../shared-v1/helpers/AppError');
+const { decodeJwt } = require('../../shared-v1/helpers/jwtHelper');
 
 const registerValidation = async (req, res, next) => {
   try {
@@ -180,7 +181,7 @@ const editUserValidation = async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    const { id } = req.params;
+    const { id } = decodeJwt(req.headers.authorization);
 
     const schema = Joi.object({
       name: Joi.string().trim().min(3).required().messages({
@@ -229,7 +230,7 @@ const editUserValidation = async (req, res, next) => {
       return next();
     }
 
-    if (userEmail.id.toString() !== id) {
+    if (userEmail.id !== id) {
       throw new AppError(
         errorCode.BAD_REQUEST,
         errorStatusCode.BAD_DATA_VALIDATION,
@@ -262,7 +263,7 @@ const editUserValidation = async (req, res, next) => {
 
 const currentUserValidation = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { id } = decodeJwt(req.headers.authorization);
 
     const user = await findUserById(id);
 

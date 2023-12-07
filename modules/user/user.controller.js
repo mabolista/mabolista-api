@@ -1,4 +1,7 @@
-const { generateToken } = require('../../shared-v1/helpers/jwtHelper');
+const {
+  generateToken,
+  decodeJwt
+} = require('../../shared-v1/helpers/jwtHelper');
 const { passwordHashing } = require('../../shared-v1/helpers/passwordHelper');
 const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
 const { setPage } = require('../../middleware/pagination/paginationValidation');
@@ -160,7 +163,7 @@ const editUser = async (req, res) => {
       );
     }
 
-    const { id } = req.params;
+    const { id } = decodeJwt(req.headers.authorization);
 
     const hashedPassword = await passwordHashing(password);
 
@@ -195,7 +198,7 @@ const editUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = decodeJwt(req.headers.authorization);
 
     const user = await findUserById(id);
 
