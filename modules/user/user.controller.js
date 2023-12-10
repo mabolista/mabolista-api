@@ -18,6 +18,12 @@ const {
 } = require('./user.service');
 const { errorStatusCode, errorCode } = require('../../shared-v1/constants');
 const AppError = require('../../shared-v1/helpers/AppError');
+const {
+  USER_MEDIA_PATH_FOLDER_DEV,
+  USER_MEDIA_PATH_FOLDER_PROD
+} = require('../../shared-v1/constants/cloudinaryMedia');
+
+const env = process.env.NODE_ENV || 'development';
 
 const getAllUser = async (req, res) => {
   try {
@@ -72,7 +78,9 @@ const register = async (req, res) => {
     } else {
       imageUrl = await uploadImageCloudinary(
         req.file.path,
-        'mabol-media-staging/user'
+        env === 'development'
+          ? USER_MEDIA_PATH_FOLDER_DEV
+          : USER_MEDIA_PATH_FOLDER_PROD
       );
     }
 
@@ -159,7 +167,9 @@ const editUser = async (req, res) => {
     } else {
       imageUrl = await uploadImageCloudinary(
         req.file.path,
-        'mabol-media-staging/user'
+        env === 'development'
+          ? USER_MEDIA_PATH_FOLDER_DEV
+          : USER_MEDIA_PATH_FOLDER_PROD
       );
     }
 

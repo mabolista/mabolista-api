@@ -32,8 +32,13 @@ const {
 } = require('../../shared-v1/utils/isWithinThreeDays');
 const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 const AppError = require('../../shared-v1/helpers/AppError');
+const {
+  EVENT_MEDIA_PATH_FOLDER_DEV,
+  EVENT_MEDIA_PATH_FOLDER_PROD
+} = require('../../shared-v1/constants/cloudinaryMedia');
 
 let t;
+const env = process.env.NODE_ENV || 'development';
 
 // Admin Dashboard
 const getAllEvent = async (req, res) => {
@@ -181,7 +186,9 @@ const addNewEvent = async (req, res) => {
     if (req.file) {
       image_url = await uploadImageCloudinary(
         req.file.path,
-        'mabol-media-staging/event'
+        env === 'development'
+          ? EVENT_MEDIA_PATH_FOLDER_DEV
+          : EVENT_MEDIA_PATH_FOLDER_PROD
       );
     }
 
@@ -284,7 +291,9 @@ const editEvent = async (req, res) => {
 
       imageUrl = await uploadImageCloudinary(
         req.file.path,
-        'mabol-media-staging/event'
+        env === 'development'
+          ? EVENT_MEDIA_PATH_FOLDER_DEV
+          : EVENT_MEDIA_PATH_FOLDER_PROD
       );
     }
 
