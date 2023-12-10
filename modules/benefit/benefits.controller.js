@@ -13,6 +13,12 @@ const {
 } = require('./benefits.service');
 const AppError = require('../../shared-v1/helpers/AppError');
 const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
+const {
+  BENEFIT_MEDIA_PATH_FOLDER_DEV,
+  BENEFIT_MEDIA_PATH_FOLDER_PROD
+} = require('../../shared-v1/constants/cloudinaryMedia');
+
+const env = process.env.NODE_ENV || 'development';
 
 const getAllBenefit = async (req, res) => {
   try {
@@ -71,7 +77,9 @@ const addBenefit = async (req, res) => {
     if (req.file) {
       imageUrl = await uploadImageCloudinary(
         req.file.path,
-        'mabol-media-staging/benefit'
+        env === 'development'
+          ? BENEFIT_MEDIA_PATH_FOLDER_DEV
+          : BENEFIT_MEDIA_PATH_FOLDER_PROD
       );
     }
 
@@ -132,7 +140,9 @@ const editBenefit = async (req, res) => {
 
       imageUrl = await uploadImageCloudinary(
         req.file.path,
-        'mabol-media-staging/benefit'
+        env === 'development'
+          ? BENEFIT_MEDIA_PATH_FOLDER_DEV
+          : BENEFIT_MEDIA_PATH_FOLDER_PROD
       );
     }
 
