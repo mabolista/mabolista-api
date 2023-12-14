@@ -120,6 +120,37 @@ const getEventById = async (req, res) => {
       );
     }
 
+    const users = [];
+    let user = {};
+
+    event.users.map((item) => {
+      user = {
+        id: item.id,
+        name: item.name,
+        playerPosition: item.EventUser.playerPosition
+      };
+
+      users.push(user);
+      return users;
+    });
+
+    const benefits = [];
+    let benefit = {};
+
+    event.benefits.map((item) => {
+      benefit = {
+        id: item.id,
+        name: item.name,
+        imageUrl: item.imageUrl,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        deletedAt: item.deletedAt
+      };
+
+      benefits.push(benefit);
+      return benefits;
+    });
+
     event = {
       id: event.id,
       title: event.title,
@@ -133,14 +164,15 @@ const getEventById = async (req, res) => {
       eventDate: event.eventDate,
       startTime: event.startTime,
       endTime: event.endTime,
-      benefits: event.benefits,
+      users,
+      benefits,
       playerQty: event.eventQuota.playerQty,
       keeperQty: event.eventQuota.keeperQty,
       playerAvailableQty: event.eventQuota.playerAvailableQty,
       keeperAvailableQty: event.eventQuota.keeperAvailableQty,
-      createdAt: event.eventQuota.createdAt,
-      updatedAt: event.eventQuota.updatedAt,
-      deletedAt: event.eventQuota.deletedAt
+      createdAt: event.createdAt,
+      updatedAt: event.updatedAt,
+      deletedAt: event.deletedAt
     };
 
     return res

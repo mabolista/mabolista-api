@@ -42,14 +42,26 @@ const findEventById = async (id) => {
       {
         model: models.Benefit,
         required: false,
-        as: 'benefits'
+        as: 'benefits',
+        where: {
+          deletedAt: null
+        },
+        through: {
+          attributes: []
+        }
+      },
+      {
+        model: models.User,
+        required: true,
+        as: 'users',
+        attributes: ['id', 'name']
       },
       {
         model: models.EventQuota,
         attributes: {
           exclude: ['id', 'eventId', 'createdAt', 'updatedAt']
         },
-        required: false,
+        required: true,
         as: 'eventQuota'
       }
     ]
