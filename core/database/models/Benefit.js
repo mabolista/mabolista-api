@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       imageUrl: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         field: 'image_url'
       },
       imagePublicId: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         field: 'image_public_id'
       },
       createdAt: {
