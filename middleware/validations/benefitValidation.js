@@ -25,14 +25,6 @@ const createBenefitValidation = async (req, res, next) => {
       );
     }
 
-    if (!req.file) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_USER_INPUT,
-        'Image wajib diisi'
-      );
-    }
-
     return next();
   } catch (err) {
     console.error(err.stack);
