@@ -136,7 +136,9 @@ const editBenefit = async (req, res) => {
     if (!req.file) {
       imageUrl = existingBenefit.imageUrl ? existingBenefit.imageUrl : '';
     } else {
-      await deleteImageCloudinary(existingBenefit.imagePublicId);
+      if (existingBenefit.imagePublicId) {
+        await deleteImageCloudinary(existingBenefit.imagePublicId);
+      }
 
       imageUrl = await uploadImageCloudinary(
         req.file.path,
@@ -236,7 +238,9 @@ const removeBenefit = async (req, res) => {
 
     const benefit = await deleteBenefit(id);
 
-    await deleteImageCloudinary(existingBenefit.imagePublicId);
+    if (existingBenefit.imagePublicId) {
+      await deleteImageCloudinary(existingBenefit.imagePublicId);
+    }
 
     return res
       .status(201)
