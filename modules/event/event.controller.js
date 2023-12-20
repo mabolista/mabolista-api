@@ -285,6 +285,8 @@ const addNewEvent = async (req, res) => {
 };
 
 const editEvent = async (req, res) => {
+  t = await sequelize.transaction();
+
   try {
     const {
       title,
@@ -388,8 +390,6 @@ const editEvent = async (req, res) => {
       endTime
     };
 
-    t = await sequelize.transaction();
-
     await updateEventQuota(
       existingEventQuota.id,
       {
@@ -436,6 +436,8 @@ const editEvent = async (req, res) => {
 };
 
 const removeEvent = async (req, res) => {
+  t = await sequelize.transaction();
+
   try {
     const { id } = req.params;
     const exsitingEvent = await findEventById(id);
@@ -447,8 +449,6 @@ const removeEvent = async (req, res) => {
         'Event tidak ditemukan'
       );
     }
-
-    t = await sequelize.transaction();
 
     await deleteEventBenefit(id, t);
 
@@ -479,6 +479,8 @@ const removeEvent = async (req, res) => {
 };
 
 const userJoinToEventByAdmin = async (req, res) => {
+  t = await sequelize.transaction();
+
   try {
     const { eventId, userId, playerPosition } = req.body;
 
@@ -526,8 +528,6 @@ const userJoinToEventByAdmin = async (req, res) => {
         'Player position unknown'
       );
     }
-
-    t = await sequelize.transaction();
 
     if (playerPosition === 'P') {
       if (playerAvailableQty < 1) {
@@ -620,6 +620,8 @@ const userJoinToEventByAdmin = async (req, res) => {
 };
 
 const userLeftEventByAdmin = async (req, res) => {
+  t = await sequelize.transaction();
+
   try {
     const { eventId, userId } = req.body;
 
@@ -659,8 +661,6 @@ const userLeftEventByAdmin = async (req, res) => {
         'Player position unknown'
       );
     }
-
-    t = await sequelize.transaction();
 
     if (existingEventUser.playerPosition === 'P') {
       await removeUserOfEvent(eventId, userId, t);
@@ -731,6 +731,8 @@ const userLeftEventByAdmin = async (req, res) => {
 
 // User Mabolista Member
 const userJoinToEvent = async (req, res) => {
+  t = await sequelize.transaction();
+
   try {
     const decode = decodeJwt(req.headers.authorization);
     const userId = decode.id;
@@ -781,8 +783,6 @@ const userJoinToEvent = async (req, res) => {
         'Player position unknown'
       );
     }
-
-    t = await sequelize.transaction();
 
     if (playerPosition === 'P') {
       if (playerAvailableQty < 1) {
@@ -875,6 +875,8 @@ const userJoinToEvent = async (req, res) => {
 };
 
 const userLeftEvent = async (req, res) => {
+  t = await sequelize.transaction();
+
   try {
     const today = new Date();
     const decode = decodeJwt(req.headers.authorization);
@@ -937,8 +939,6 @@ const userLeftEvent = async (req, res) => {
         'Player position unknown'
       );
     }
-
-    t = await sequelize.transaction();
 
     if (existingEventUser.playerPosition === 'P') {
       await removeUserOfEvent(eventId, userId, t);
