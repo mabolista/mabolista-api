@@ -52,7 +52,7 @@ const findEventById = async (id) => {
       },
       {
         model: models.User,
-        required: true,
+        required: false,
         as: 'users',
         attributes: ['id', 'name']
       },
