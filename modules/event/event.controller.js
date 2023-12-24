@@ -486,7 +486,6 @@ const userJoinToEventByAdmin = async (req, res) => {
 
     const existingEvent = await findEventById(eventId);
     const today = new Date();
-    const eventDate = new Date(existingEvent.eventDate);
 
     if (!existingEvent) {
       throw new AppError(
@@ -495,6 +494,8 @@ const userJoinToEventByAdmin = async (req, res) => {
         'Event tidak ditemukan'
       );
     }
+
+    const eventDate = new Date(existingEvent.eventDate);
 
     if (eventDate < today) {
       throw new AppError(
