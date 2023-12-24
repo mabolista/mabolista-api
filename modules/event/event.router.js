@@ -49,12 +49,12 @@ router.put(
 );
 router.delete('/admin/events/:id', userAdminAuthenticated, removeEvent);
 router.post(
-  '/admin/events/join-event',
+  '/admin/event/join-event',
   userAdminAuthenticated,
   userJoinToEventByAdmin
 );
-router.post(
-  '/admin/events/left-event',
+router.delete(
+  '/admin/event/left-event',
   userAdminAuthenticated,
   userLeftEventByAdmin
 );
@@ -64,7 +64,7 @@ router.post(
 router.get('/events', maxPageSizeValidation, getAllEvent);
 router.get('/events/:id', getEventById);
 router.post('/events/join-event', authenticated, userJoinToEvent);
-router.post('/events/left-event', authenticated, userLeftEvent);
+router.delete('/events/left-event', authenticated, userLeftEvent);
 // End of Public API Side Router
 
 module.exports = router;
