@@ -2,9 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const swaggerUi = require('swagger-ui-express');
 const router = require('./route/index');
+const apiDocumentation = require('./apidocs.json');
 
 const app = express();
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
 
 dotenv.config();
 

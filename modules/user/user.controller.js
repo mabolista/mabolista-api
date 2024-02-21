@@ -206,6 +206,7 @@ const editUser = async (req, res) => {
   }
 };
 
+// TODO: fixing bug on user admin to create new controller handle get user by id from params not from the token
 const getUserById = async (req, res) => {
   try {
     const { id } = decodeJwt(req.headers.authorization);

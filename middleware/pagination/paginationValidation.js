@@ -7,6 +7,8 @@ const maxPageSizeValidation = (req, res, next) => {
   try {
     const { pageSize } = req.query;
 
+    // TODO: Handle bad request when no pageSize and page request query if (!pageSize || !page)
+
     if (pageSize > 25) {
       throw new AppError(
         errorCode.BAD_REQUEST,
