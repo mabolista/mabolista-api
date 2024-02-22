@@ -1,14 +1,14 @@
 {
   "name": "mabolista-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "/api/index.js",
   "repository": "git@github.com:mabolista/mabolista-api.git",
   "author": "Ilham Alamsyah <ilhamalamsyah510@gmail.com>",
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "nodemon api/index.js",
+    "start": "node api/index.js"
   },
   "jest": {
     "collectCoverage": true
