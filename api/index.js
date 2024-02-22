@@ -3,8 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const swaggerUi = require('swagger-ui-express');
-const router = require('./route/index');
-const apiDocumentation = require('./apidocs.json');
+const router = require('../route/index');
+const apiDocumentation = require('../apidocs.json');
 
 const app = express();
 
