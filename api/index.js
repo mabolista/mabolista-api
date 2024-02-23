@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use(router);
+app.use('/api', router);
 
 const server = createServer(app);
 
