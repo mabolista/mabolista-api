@@ -4,9 +4,9 @@ const {
   createEvent,
   updateEvent,
   deleteEvent
-} = require('./event.service');
+} = require('./event.repository');
 const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
-const { findEventById } = require('./event.service');
+const { findEventById } = require('./event.repository');
 const {
   uploadImageCloudinary,
   deleteImageCloudinary

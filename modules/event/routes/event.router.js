@@ -15,8 +15,8 @@ const {
   userLeftEvent,
   userJoinToEventByAdmin,
   userLeftEventByAdmin
-} = require('./event.controller');
-const { getEventById } = require('./event.controller');
+} = require('./controllers/event.controller');
+const { getEventById } = require('./controllers/event.controller');
 const { upload } = require('../../middleware/file/multer');
 const {
   createEventValidation,
