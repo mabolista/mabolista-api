@@ -6,7 +6,7 @@ const {
   findEmployeeByEmail,
   findEmployeeByEmailGetPassword,
   findEmployeeById
-} = require('../../modules/employee/employee.service');
+} = require('../../modules/employee/repositories/employee.repository');
 const AppError = require('../../shared-v1/helpers/AppError');
 const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 

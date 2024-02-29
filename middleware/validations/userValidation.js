@@ -5,7 +5,7 @@ const {
   findUserByEmail,
   findUserByEmailGetPassword,
   findUserById
-} = require('../../modules/user/user.service');
+} = require('../../modules/user/repositories/user.repository');
 const { passwordCompare } = require('../../shared-v1/helpers/passwordHelper');
 const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 const AppError = require('../../shared-v1/helpers/AppError');
