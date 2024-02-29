@@ -1,41 +1,46 @@
-const { setPage } = require('../../middleware/pagination/paginationValidation');
+const {
+  setPage
+} = require('../../../middleware/pagination/paginationValidation');
 const {
   findAllEvent,
   createEvent,
   updateEvent,
   deleteEvent
-} = require('./event.repository');
-const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
-const { findEventById } = require('./event.repository');
+} = require('../repositories/event.repository');
+const {
+  responseData
+} = require('../../../shared-v1/helpers/responseDataHelper');
+const { findEventById } = require('../repositories/event.repository');
 const {
   uploadImageCloudinary,
   deleteImageCloudinary
-} = require('../../shared-v1/utils/cloudinary/uploadImage');
-const { sequelize } = require('../../core/database/models');
+} = require('../../../shared-v1/utils/cloudinary/uploadImage');
+const { sequelize } = require('../../../core/database/models');
 const {
   createEventBenefit,
   deleteEventBenefit
-} = require('../event_benefit/eventBenefit.service');
+} = require('../../event_benefit/eventBenefit.service');
 const {
   addUserToEvent,
   removeUserOfEvent,
   findEventUserByEventIdAndUserId
-} = require('../event_user/eventUser.service');
+} = require('../../event_user/eventUser.service');
 const {
   addEventQuota,
   findEventQuotaByEventId,
   updateEventQuota
-} = require('../event_quota/eventQuota.service');
-const { decodeJwt } = require('../../shared-v1/helpers/jwtHelper');
+} = require('../../event_quota/eventQuota.service');
+const { decodeJwt } = require('../../../shared-v1/helpers/jwtHelper');
 const {
   isWithinThreedays
-} = require('../../shared-v1/utils/isWithinThreeDays');
-const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
-const AppError = require('../../shared-v1/helpers/AppError');
+} = require('../../../shared-v1/utils/isWithinThreeDays');
+const { errorCode, errorStatusCode } = require('../../../shared-v1/constants');
+const AppError = require('../../../shared-v1/helpers/AppError');
 const {
   EVENT_MEDIA_PATH_FOLDER_DEV,
   EVENT_MEDIA_PATH_FOLDER_PROD
-} = require('../../shared-v1/constants/cloudinaryMedia');
+} = require('../../../shared-v1/constants/cloudinaryMedia');
+const EventService = require('../services/event.service');
 
 let t;
 const env = process.env.NODE_ENV || 'development';
@@ -47,38 +52,13 @@ const getAllEvent = async (req, res) => {
 
     const offset = setPage(pageSize, page);
 
-    const { rows } = await findAllEvent(offset, pageSize);
-
-    const events = rows.map((row) => {
-      return {
-        id: row.dataValues.id,
-        title: row.dataValues.title,
-        imageUrl: row.dataValues.imageUrl,
-        description: row.dataValues.description,
-        location: row.dataValues.location,
-        gmapsUrl: row.dataValues.gmapsUrl,
-        notes: row.dataValues.notes,
-        playerPrice: row.dataValues.playerPrice,
-        keeperPrice: row.dataValues.keeperPrice,
-        eventDate: row.dataValues.eventDate,
-        startTime: row.dataValues.startTime,
-        endTime: row.dataValues.endTime,
-        benefits: row.dataValues.benefits,
-        playerQty: row.dataValues.eventQuota.playerQty,
-        keeperQty: row.dataValues.eventQuota.keeperQty,
-        playerAvailableQty: row.dataValues.eventQuota.playerAvailableQty,
-        keeperAvailableQty: row.dataValues.eventQuota.keeperAvailableQty,
-        createdAt: row.dataValues.createdAt,
-        updatedAt: row.dataValues.updatedAt,
-        deletedAt: row.dataValues.deletedAt
-      };
-    });
+    const events = await EventService.findAllEvent(offset, pageSize);
 
     const metaData = {
       currentPage: page,
       pageSize,
-      total: rows.length.toString(),
-      totalPage: Math.ceil(rows.length / pageSize).toString()
+      total: events.length.toString(),
+      totalPage: Math.ceil(events.length / pageSize).toString()
     };
 
     const data = {
@@ -109,75 +89,10 @@ const getAllEvent = async (req, res) => {
 
 const getEventById = async (req, res) => {
   try {
-    const { id } = req.params;
-    let event = await findEventById(id);
-
-    if (event === null) {
-      throw new AppError(
-        errorCode.NOT_FOUND,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Event tidak ditemukan'
-      );
-    }
-
-    const users = [];
-    let user = {};
-
-    event.users.map((item) => {
-      user = {
-        id: item.id,
-        name: item.name,
-        playerPosition: item.EventUser.playerPosition
-      };
-
-      users.push(user);
-      return users;
-    });
-
-    const benefits = [];
-    let benefit = {};
-
-    event.benefits.map((item) => {
-      benefit = {
-        id: item.id,
-        name: item.name,
-        imageUrl: item.imageUrl,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        deletedAt: item.deletedAt
-      };
-
-      benefits.push(benefit);
-      return benefits;
-    });
-
-    event = {
-      id: event.id,
-      title: event.title,
-      imageUrl: event.imageUrl,
-      description: event.description,
-      location: event.location,
-      gmapsUrl: event.gmapsUrl,
-      notes: event.notes,
-      playerPrice: event.playerPrice,
-      keeperPrice: event.keeperPrice,
-      eventDate: event.eventDate,
-      startTime: event.startTime,
-      endTime: event.endTime,
-      users,
-      benefits,
-      playerQty: event.eventQuota.playerQty,
-      keeperQty: event.eventQuota.keeperQty,
-      playerAvailableQty: event.eventQuota.playerAvailableQty,
-      keeperAvailableQty: event.eventQuota.keeperAvailableQty,
-      createdAt: event.createdAt,
-      updatedAt: event.updatedAt,
-      deletedAt: event.deletedAt
-    };
-
+    const data = await EventService.findEventById(req);
     return res
       .status(200)
-      .json(responseData(200, 'Sucess get event data', null, event));
+      .json(responseData(200, 'Sucess get event data', null, data));
   } catch (error) {
     console.error(error.stack);
 

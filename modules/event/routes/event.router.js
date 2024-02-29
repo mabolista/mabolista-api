@@ -2,10 +2,10 @@ const express = require('express');
 const {
   userAdminAuthenticated,
   authenticated
-} = require('../../middleware/auth/authorization');
+} = require('../../../middleware/auth/authorization');
 const {
   maxPageSizeValidation
-} = require('../../middleware/pagination/paginationValidation');
+} = require('../../../middleware/pagination/paginationValidation');
 const {
   getAllEvent,
   addNewEvent,
@@ -15,13 +15,13 @@ const {
   userLeftEvent,
   userJoinToEventByAdmin,
   userLeftEventByAdmin
-} = require('./controllers/event.controller');
-const { getEventById } = require('./controllers/event.controller');
-const { upload } = require('../../middleware/file/multer');
+} = require('../controllers/event.controller');
+const { getEventById } = require('../controllers/event.controller');
+const { upload } = require('../../../middleware/file/multer');
 const {
   createEventValidation,
   editEventValidation
-} = require('../../middleware/validations/eventValidation');
+} = require('../../../middleware/validations/eventValidation');
 
 const router = express.Router();
 
