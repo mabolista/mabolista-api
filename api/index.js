@@ -9,11 +9,11 @@ const apiDocumentation = require('../apidocs.json');
 
 const app = express();
 
+app.use(cors());
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
 
 dotenv.config();
-
-app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(express.json());
