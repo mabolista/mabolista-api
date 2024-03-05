@@ -105,8 +105,6 @@ class UserController {
     try {
       const data = await UserService.findUserByEmail(req);
 
-      console.log('data: ', data);
-
       return res
         .status(201)
         .json(responseData(201, 'Berhasil login', null, data));
