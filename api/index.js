@@ -6,6 +6,7 @@ const swaggerUi = require('swagger-ui-express');
 const { createServer } = require('http');
 const router = require('../route/index');
 const apiDocumentation = require('../apidocs.json');
+const allowCors = require('../shared-v1/utils/handleCors');
 
 const app = express();
 
@@ -30,7 +31,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use('/api', router);
+app.use('/api', allowCors(router));
 
 const server = createServer(app);
 
