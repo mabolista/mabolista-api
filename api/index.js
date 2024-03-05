@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/events', maxPageSizeValidation, allowCors(getAllEvent));
+app.get('/api/events', maxPageSizeValidation, allowCors(getAllEvent));
 
 // app.use('/api', allowCors(router));
 
