@@ -2,48 +2,11 @@ const {
   setPage
 } = require('../../../middleware/pagination/paginationValidation');
 const {
-  findAllEvent,
-  createEvent,
-  updateEvent,
-  deleteEvent
-} = require('../repositories/event.repository');
-const {
   responseData
 } = require('../../../shared-v1/helpers/responseDataHelper');
-const { findEventById } = require('../repositories/event.repository');
-const {
-  uploadImageCloudinary,
-  deleteImageCloudinary
-} = require('../../../shared-v1/utils/cloudinary/uploadImage');
-const { sequelize } = require('../../../core/database/models');
-const {
-  createEventBenefit,
-  deleteEventBenefit
-} = require('../../event_benefit/eventBenefit.service');
-const {
-  addUserToEvent,
-  removeUserOfEvent,
-  findEventUserByEventIdAndUserId
-} = require('../../event_user/eventUser.service');
-const {
-  addEventQuota,
-  findEventQuotaByEventId,
-  updateEventQuota
-} = require('../../event_quota/eventQuota.service');
-const { decodeJwt } = require('../../../shared-v1/helpers/jwtHelper');
-const {
-  isWithinThreedays
-} = require('../../../shared-v1/utils/isWithinThreeDays');
 const { errorCode, errorStatusCode } = require('../../../shared-v1/constants');
 const AppError = require('../../../shared-v1/helpers/AppError');
-const {
-  EVENT_MEDIA_PATH_FOLDER_DEV,
-  EVENT_MEDIA_PATH_FOLDER_PROD
-} = require('../../../shared-v1/constants/cloudinaryMedia');
 const EventService = require('../services/event.service');
-
-let t;
-const env = process.env.NODE_ENV || 'development';
 
 // Admin Dashboard
 const getAllEvent = async (req, res) => {
@@ -52,13 +15,13 @@ const getAllEvent = async (req, res) => {
 
     const offset = setPage(pageSize, page);
 
-    const events = await EventService.findAllEvent(offset, pageSize);
+    const { events, count } = await EventService.findAllEvent(offset, pageSize);
 
     const metaData = {
-      currentPage: page,
-      pageSize,
-      total: events.length.toString(),
-      totalPage: Math.ceil(events.length / pageSize).toString()
+      currentPage: parseInt(page, 10),
+      pageSize: parseInt(pageSize, 10),
+      total: count,
+      totalPage: Math.ceil(count / parseInt(pageSize, 10))
     };
 
     const data = {
@@ -109,81 +72,13 @@ const getEventById = async (req, res) => {
 };
 
 const addNewEvent = async (req, res) => {
-  t = await sequelize.transaction();
-
   try {
-    const {
-      title,
-      description,
-      location,
-      gmapsUrl,
-      notes,
-      playerPrice,
-      keeperPrice,
-      eventDate,
-      startTime,
-      endTime,
-      playerQty,
-      keeperQty,
-      benefitIds
-    } = req.body;
-
-    let image_url = '';
-
-    if (req.file) {
-      image_url = await uploadImageCloudinary(
-        req.file.path,
-        env === 'development'
-          ? EVENT_MEDIA_PATH_FOLDER_DEV
-          : EVENT_MEDIA_PATH_FOLDER_PROD
-      );
-    }
-
-    const payload = {
-      title,
-      imageUrl: image_url.secure_url,
-      imagePublicId: image_url.public_id,
-      description,
-      location,
-      gmapsUrl,
-      notes,
-      playerPrice,
-      keeperPrice,
-      eventDate,
-      startTime,
-      endTime
-    };
-
-    const event = await createEvent(payload, t);
-    const eventId = event.id;
-
-    const eventBenefitIds = await benefitIds.map((benefitId) => ({
-      eventId,
-      benefitId: parseInt(benefitId, 10)
-    }));
-
-    await createEventBenefit(eventBenefitIds, t);
-
-    const eventQuotaPayload = {
-      eventId,
-      playerQty,
-      keeperQty,
-      playerAvailableQty: playerQty,
-      keeperAvailableQty: keeperQty
-    };
-
-    await addEventQuota(eventQuotaPayload, t);
-
-    await t.commit();
-
-    const result = await findEventById(eventId);
+    const data = await EventService.createEvent(req);
 
     return res
       .status(201)
-      .json(responseData(201, 'Success create new event', null, result));
+      .json(responseData(201, 'Success create new event', null, data));
   } catch (error) {
-    await t.rollback();
-
     console.error(error.stack);
 
     return res
@@ -200,142 +95,13 @@ const addNewEvent = async (req, res) => {
 };
 
 const editEvent = async (req, res) => {
-  t = await sequelize.transaction();
-
   try {
-    const {
-      title,
-      description,
-      location,
-      gmapsUrl,
-      notes,
-      playerPrice,
-      keeperPrice,
-      eventDate,
-      startTime,
-      endTime,
-      playerQty,
-      keeperQty,
-      benefitIds
-    } = req.body;
-
-    const { id } = req.params;
-    let imageUrl = '';
-
-    const existingEvent = await findEventById(id);
-    const existingEventQuota = await findEventQuotaByEventId(id);
-
-    if (!existingEvent) {
-      throw new AppError(
-        errorCode.NOT_FOUND,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Event not found'
-      );
-    }
-
-    if (!req.file) {
-      imageUrl = existingEvent.imageUrl ? existingEvent.imageUrl : '';
-    } else {
-      await deleteImageCloudinary(existingEvent.imagePublicId);
-
-      imageUrl = await uploadImageCloudinary(
-        req.file.path,
-        env === 'development'
-          ? EVENT_MEDIA_PATH_FOLDER_DEV
-          : EVENT_MEDIA_PATH_FOLDER_PROD
-      );
-    }
-
-    let { playerAvailableQty, keeperAvailableQty } = existingEventQuota;
-    const existingPlayerQty = existingEventQuota.playerQty;
-    const existingKeeperQty = existingEventQuota.keeperQty;
-
-    if (playerQty > existingPlayerQty) {
-      const qtyGap = playerQty - existingPlayerQty;
-
-      playerAvailableQty += qtyGap;
-    }
-
-    if (playerQty < existingPlayerQty) {
-      const usageQty = existingPlayerQty - playerAvailableQty;
-
-      if (playerQty < usageQty) {
-        throw new AppError(
-          errorCode.BAD_REQUEST,
-          errorStatusCode.BAD_DATA_VALIDATION,
-          'Quantity player tidak bisa kurang dari quantity player yang sudah digunakan'
-        );
-      }
-
-      playerAvailableQty = playerQty - usageQty;
-    }
-
-    if (keeperQty > existingKeeperQty) {
-      const qtyGap = keeperQty - existingKeeperQty;
-
-      keeperAvailableQty += qtyGap;
-    }
-
-    if (keeperQty < existingKeeperQty) {
-      const usageQty = existingKeeperQty - keeperAvailableQty;
-
-      if (keeperQty < usageQty) {
-        throw new AppError(
-          errorCode.BAD_REQUEST,
-          errorStatusCode.BAD_DATA_VALIDATION,
-          'Quantity keeper tidak bisa kurang dari quantity keeper yang sudah digunakan'
-        );
-      }
-
-      keeperAvailableQty = keeperQty - usageQty;
-    }
-
-    const payload = {
-      title,
-      imageUrl: imageUrl.secure_url,
-      imagePublicId: imageUrl.public_id,
-      description,
-      location,
-      gmapsUrl,
-      notes,
-      playerPrice,
-      keeperPrice,
-      eventDate,
-      startTime,
-      endTime
-    };
-
-    await updateEventQuota(
-      existingEventQuota.id,
-      {
-        eventId: id,
-        playerQty,
-        keeperQty,
-        playerAvailableQty,
-        keeperAvailableQty
-      },
-      t
-    );
-
-    await deleteEventBenefit(id, t);
-    await updateEvent(id, payload, t);
-
-    const eventBenefitIds = await benefitIds.map((benefitId) => ({
-      eventId: parseInt(id, 10),
-      benefitId: parseInt(benefitId, 10)
-    }));
-    await createEventBenefit(eventBenefitIds, t);
-
-    t.commit();
-
-    const event = await findEventById(id);
+    const event = await EventService.updateEvent(req);
 
     return res
       .status(201)
       .json(responseData(201, 'Berhasil mengedit data event', null, event));
   } catch (error) {
-    t.rollback();
-
     console.error(error.stack);
 
     if (error instanceof AppError) {
@@ -351,34 +117,13 @@ const editEvent = async (req, res) => {
 };
 
 const removeEvent = async (req, res) => {
-  t = await sequelize.transaction();
-
   try {
-    const { id } = req.params;
-    const exsitingEvent = await findEventById(id);
-
-    if (!exsitingEvent) {
-      throw new AppError(
-        errorCode.NOT_FOUND,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Event tidak ditemukan'
-      );
-    }
-
-    await deleteEventBenefit(id, t);
-
-    const event = await deleteEvent(id, t);
-
-    await deleteImageCloudinary(exsitingEvent.imagePublicId);
-
-    t.commit();
+    const event = await EventService.deleteEvent(req);
 
     return res
       .status(201)
       .json(responseData(201, 'Berhasil menghapus data event', null, event));
   } catch (error) {
-    t.rollback();
-
     console.error(error.stack);
 
     if (error instanceof AppError) {
@@ -394,126 +139,20 @@ const removeEvent = async (req, res) => {
 };
 
 const userJoinToEventByAdmin = async (req, res) => {
-  t = await sequelize.transaction();
-
   try {
-    const { eventId, userId, playerPosition } = req.body;
-
-    const existingEvent = await findEventById(eventId);
-    const today = new Date();
-
-    if (!existingEvent) {
-      throw new AppError(
-        errorCode.NOT_FOUND,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Event tidak ditemukan'
-      );
-    }
-
-    const eventDate = new Date(existingEvent.eventDate);
-
-    if (eventDate < today) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Tidak dapat bergabung dengan event ini karena jadwal telah lewat'
-      );
-    }
-
-    const existingEventUser = await findEventUserByEventIdAndUserId(
-      eventId,
-      userId
-    );
-
-    if (existingEventUser) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'User telah bergabung ke event ini'
-      );
-    }
-
-    const existingEventQuota = await findEventQuotaByEventId(eventId);
-
-    let { playerAvailableQty, keeperAvailableQty } = existingEventQuota;
-
-    if (playerPosition !== 'P' && playerPosition !== 'GK') {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Player position unknown'
-      );
-    }
-
-    if (playerPosition === 'P') {
-      if (playerAvailableQty < 1) {
-        throw new AppError(
-          errorCode.BAD_REQUEST,
-          errorStatusCode.BAD_DATA_VALIDATION,
-          'Kuantitas player telah habis'
-        );
-      }
-
-      await addUserToEvent(eventId, userId, playerPosition, t);
-
-      playerAvailableQty -= 1;
-
-      await updateEventQuota(
-        existingEventQuota.id,
-        {
-          eventId,
-          playerQty: existingEventQuota.playerQty,
-          keeperQty: existingEventQuota.keeperQty,
-          playerAvailableQty,
-          keeperAvailableQty
-        },
-        t
-      );
-    }
-
-    if (playerPosition === 'GK') {
-      if (keeperAvailableQty < 1) {
-        throw new AppError(
-          errorCode.BAD_REQUEST,
-          errorStatusCode.BAD_DATA_VALIDATION,
-          'Kuantitas keeper telah habis'
-        );
-      }
-
-      await addUserToEvent(eventId, userId, playerPosition, t);
-
-      keeperAvailableQty -= 1;
-
-      await updateEventQuota(
-        existingEventQuota.id,
-        {
-          eventId,
-          playerQty: existingEventQuota.playerQty,
-          keeperQty: existingEventQuota.keeperQty,
-          playerAvailableQty,
-          keeperAvailableQty
-        },
-        t
-      );
-    }
-
-    t.commit();
-
-    const data = await findEventById(eventId);
+    const event = await EventService.joinEventByAdmin(req);
 
     return res
       .status(200)
       .json(
         responseData(
           200,
-          `Berhasil bergabung dengan event ${data.title}`,
+          `Berhasil bergabung dengan event ${event.title}`,
           null,
-          data
+          event
         )
       );
   } catch (error) {
-    t.rollback();
-
     console.error(error.stack);
 
     if (error instanceof AppError) {
@@ -536,94 +175,12 @@ const userJoinToEventByAdmin = async (req, res) => {
 };
 
 const userLeftEventByAdmin = async (req, res) => {
-  t = await sequelize.transaction();
-
   try {
-    const { eventId, userId } = req.body;
-
-    const existingEvent = await findEventById(eventId);
-
-    if (!existingEvent) {
-      throw new AppError(
-        errorCode.NOT_FOUND,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Event tidak ditemukan'
-      );
-    }
-
-    const existingEventUser = await findEventUserByEventIdAndUserId(
-      eventId,
-      userId
-    );
-
-    if (!existingEventUser) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Kamu belum bergabung dengan event ini'
-      );
-    }
-
-    const existingEventQuota = await findEventQuotaByEventId(eventId);
-    let { playerAvailableQty, keeperAvailableQty } = existingEventQuota;
-
-    if (
-      existingEventUser.playerPosition !== 'P' &&
-      existingEventUser.playerPosition !== 'GK'
-    ) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Player position unknown'
-      );
-    }
-
-    if (existingEventUser.playerPosition === 'P') {
-      await removeUserOfEvent(eventId, userId, t);
-
-      playerAvailableQty += 1;
-
-      await updateEventQuota(
-        existingEventQuota.id,
-        {
-          eventId,
-          playerQty: existingEventQuota.playerQty,
-          keeperQty: existingEventQuota.keeperQty,
-          playerAvailableQty,
-          keeperAvailableQty
-        },
-        t
-      );
-    }
-
-    if (existingEventUser.playerPosition === 'GK') {
-      await removeUserOfEvent(eventId, userId, t);
-
-      keeperAvailableQty += 1;
-
-      await updateEventQuota(
-        existingEventQuota.id,
-        {
-          eventId,
-          playerQty: existingEventQuota.playerQty,
-          keeperQty: existingEventQuota.keeperQty,
-          playerAvailableQty,
-          keeperAvailableQty
-        },
-        t
-      );
-    }
-
-    t.commit();
-
-    const data = await findEventById(eventId);
-
+    const event = await EventService.leaveEventByAdmin(req);
     return res
       .status(200)
-      .json(responseData(200, 'Berhasil keluar dari event', null, data));
+      .json(responseData(200, 'Berhasil keluar dari event', null, event));
   } catch (error) {
-    t.rollback();
-
     console.error(error.stack);
 
     if (error instanceof AppError) {
@@ -647,128 +204,20 @@ const userLeftEventByAdmin = async (req, res) => {
 
 // User Mabolista Member
 const userJoinToEvent = async (req, res) => {
-  t = await sequelize.transaction();
-
   try {
-    const decode = decodeJwt(req.headers.authorization);
-    const userId = decode.id;
-    const today = new Date();
-    const { eventId, playerPosition } = req.body;
-
-    const existingEvent = await findEventById(eventId);
-
-    if (!existingEvent) {
-      throw new AppError(
-        errorCode.NOT_FOUND,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Event tidak ditemukan'
-      );
-    }
-
-    const eventDate = new Date(existingEvent.eventDate);
-
-    if (eventDate < today) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Tidak dapat bergabung dengan event ini karena jadwal telah lewat'
-      );
-    }
-
-    const existingEventUser = await findEventUserByEventIdAndUserId(
-      eventId,
-      userId
-    );
-
-    if (existingEventUser) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'User telah bergabung ke event ini'
-      );
-    }
-
-    const existingEventQuota = await findEventQuotaByEventId(eventId);
-
-    let { playerAvailableQty, keeperAvailableQty } = existingEventQuota;
-
-    if (playerPosition !== 'P' && playerPosition !== 'GK') {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Player position unknown'
-      );
-    }
-
-    if (playerPosition === 'P') {
-      if (playerAvailableQty < 1) {
-        throw new AppError(
-          errorCode.BAD_REQUEST,
-          errorStatusCode.BAD_DATA_VALIDATION,
-          'Kuantitas player telah habis'
-        );
-      }
-
-      await addUserToEvent(eventId, userId, playerPosition, t);
-
-      playerAvailableQty -= 1;
-
-      await updateEventQuota(
-        existingEventQuota.id,
-        {
-          eventId,
-          playerQty: existingEventQuota.playerQty,
-          keeperQty: existingEventQuota.keeperQty,
-          playerAvailableQty,
-          keeperAvailableQty
-        },
-        t
-      );
-    }
-
-    if (playerPosition === 'GK') {
-      if (keeperAvailableQty < 1) {
-        throw new AppError(
-          errorCode.BAD_REQUEST,
-          errorStatusCode.BAD_DATA_VALIDATION,
-          'Kuantitas keeper telah habis'
-        );
-      }
-
-      await addUserToEvent(eventId, userId, playerPosition, t);
-
-      keeperAvailableQty -= 1;
-
-      await updateEventQuota(
-        existingEventQuota.id,
-        {
-          eventId,
-          playerQty: existingEventQuota.playerQty,
-          keeperQty: existingEventQuota.keeperQty,
-          playerAvailableQty,
-          keeperAvailableQty
-        },
-        t
-      );
-    }
-
-    t.commit();
-
-    const data = await findEventById(eventId);
+    const event = await EventService.joinEvent(req);
 
     return res
       .status(200)
       .json(
         responseData(
           200,
-          `Berhasil bergabung dengan event ${data.title}`,
+          `Berhasil bergabung dengan event ${event.title}`,
           null,
-          data
+          event
         )
       );
   } catch (error) {
-    t.rollback();
-
     console.error(error.stack);
 
     if (error instanceof AppError) {
@@ -791,117 +240,12 @@ const userJoinToEvent = async (req, res) => {
 };
 
 const userLeftEvent = async (req, res) => {
-  t = await sequelize.transaction();
-
   try {
-    const today = new Date();
-    const decode = decodeJwt(req.headers.authorization);
-    const userId = decode.id;
-
-    const { eventId } = req.body;
-
-    const existingEvent = await findEventById(eventId);
-
-    if (!existingEvent) {
-      throw new AppError(
-        errorCode.NOT_FOUND,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Event tidak ditemukan'
-      );
-    }
-
-    const existingEventUser = await findEventUserByEventIdAndUserId(
-      eventId,
-      userId
-    );
-
-    if (!existingEventUser) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Kamu belum bergabung dengan event ini'
-      );
-    }
-
-    if (isWithinThreedays(new Date(existingEvent.eventDate))) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Kamu tidak dapat keluar event dalam H-3 dari tanggal event'
-      );
-    }
-
-    if (
-      new Date(existingEvent.eventDate).toLocaleDateString() <=
-      today.toLocaleString()
-    ) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Kamu tidak dapat keluar event karena tanggal event telah lewat atau hari ini'
-      );
-    }
-
-    const existingEventQuota = await findEventQuotaByEventId(eventId);
-    let { playerAvailableQty, keeperAvailableQty } = existingEventQuota;
-
-    if (
-      existingEventUser.playerPosition !== 'P' &&
-      existingEventUser.playerPosition !== 'GK'
-    ) {
-      throw new AppError(
-        errorCode.BAD_REQUEST,
-        errorStatusCode.BAD_DATA_VALIDATION,
-        'Player position unknown'
-      );
-    }
-
-    if (existingEventUser.playerPosition === 'P') {
-      await removeUserOfEvent(eventId, userId, t);
-
-      playerAvailableQty += 1;
-
-      await updateEventQuota(
-        existingEventQuota.id,
-        {
-          eventId,
-          playerQty: existingEventQuota.playerQty,
-          keeperQty: existingEventQuota.keeperQty,
-          playerAvailableQty,
-          keeperAvailableQty
-        },
-        t
-      );
-    }
-
-    if (existingEventUser.playerPosition === 'GK') {
-      await removeUserOfEvent(eventId, userId, t);
-
-      keeperAvailableQty += 1;
-
-      await updateEventQuota(
-        existingEventQuota.id,
-        {
-          eventId,
-          playerQty: existingEventQuota.playerQty,
-          keeperQty: existingEventQuota.keeperQty,
-          playerAvailableQty,
-          keeperAvailableQty
-        },
-        t
-      );
-    }
-
-    t.commit();
-
-    const data = await findEventById(eventId);
-
+    const event = await EventService.leaveEvent(req);
     return res
       .status(200)
-      .json(responseData(200, 'Berhasil keluar dari event', null, data));
+      .json(responseData(200, 'Berhasil keluar dari event', null, event));
   } catch (error) {
-    t.rollback();
-
     console.error(error.stack);
 
     if (error instanceof AppError) {

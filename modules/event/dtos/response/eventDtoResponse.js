@@ -1,32 +1,36 @@
 class EventDTOResponse {
   constructor(event) {
-    this.id = event.dataValues.id;
-    this.title = event.dataValues.title;
-    this.imageUrl = event.dataValues.imageUrl;
-    this.description = event.dataValues.description;
-    this.location = event.dataValues.location;
-    this.gmapsUrl = event.dataValues.gmapsUrl;
-    this.notes = event.dataValues.notes;
-    this.playerPrice = event.dataValues.playerPrice;
-    this.keeperPrice = event.dataValues.keeperPrice;
-    this.eventDate = event.dataValues.eventDate;
-    this.startTime = event.dataValues.startTime;
-    this.endTime = event.dataValues.endTime;
-    this.benefits = event.dataValues.benefits;
-    this.users = event.dataValues.users.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-        playerPosition: item.EventUser.playerPosition
-      };
+    this.id = event.id;
+    this.title = event.title;
+    this.imageUrl = event.imageUrl;
+    this.description = event.description;
+    this.location = event.location;
+    this.gmapsUrl = event.gmapsUrl;
+    this.notes = event.notes;
+    this.playerPrice = event.playerPrice;
+    this.keeperPrice = event.keeperPrice;
+    this.eventDate = event.eventDate;
+    this.startTime = event.startTime;
+    this.endTime = event.endTime;
+    this.benefits = event.benefits;
+    this.users = [];
+    this.playerQty = event.eventQuota.playerQty;
+    this.keeperQty = event.eventQuota.keeperQty;
+    this.playerAvailableQty = event.eventQuota.playerAvailableQty;
+    this.keeperAvailableQty = event.eventQuota.keeperAvailableQty;
+    this.createdAt = event.createdAt;
+    this.updatedAt = event.updatedAt;
+    this.deletedAt = event.deletedAt;
+  }
+
+  addDataUsers(users) {
+    users.map((user) => {
+      return this.users.push({
+        id: user.id,
+        name: user.name,
+        playerPosition: user.EventUser.playerPosition
+      });
     });
-    this.playerQty = event.dataValues.eventQuota.playerQty;
-    this.keeperQty = event.dataValues.eventQuota.keeperQty;
-    this.playerAvailableQty = event.dataValues.eventQuota.playerAvailableQty;
-    this.keeperAvailableQty = event.dataValues.eventQuota.keeperAvailableQty;
-    this.createdAt = event.dataValues.createdAt;
-    this.updatedAt = event.dataValues.updatedAt;
-    this.deletedAt = event.dataValues.deletedAt;
   }
 }
 

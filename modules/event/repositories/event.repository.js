@@ -40,7 +40,8 @@ class EventRepository {
           required: false,
           as: 'eventQuota'
         }
-      ]
+      ],
+      distinct: true
     });
 
     if (events === null) return null;
@@ -85,7 +86,7 @@ class EventRepository {
 
     if (event === null) return null;
 
-    return event;
+    return event.toJSON();
   }
 
   async createEvent(
@@ -174,18 +175,139 @@ class EventRepository {
 
     const event = await models.Event.findOne({
       where: {
-        id
+        [Op.and]: [{ id }, { deletedAt: { [Op.is]: null } }]
       },
       include: [
         {
           model: models.Benefit,
           required: false,
-          as: 'benefits'
+          as: 'benefits',
+          through: {
+            attributes: []
+          },
+          attributes: { exclude: ['imagePublicId'] },
+          where: {
+            deletedAt: { [Op.is]: null }
+          }
+        },
+        {
+          model: models.User,
+          required: false,
+          as: 'users',
+          attributes: ['id', 'name']
+        },
+        {
+          model: models.EventQuota,
+          attributes: {
+            exclude: ['id', 'eventId', 'createdAt', 'updatedAt']
+          },
+          required: true,
+          as: 'eventQuota'
         }
       ]
     });
 
     return event;
+  }
+
+  async findEventQuotaByEventId(eventId) {
+    eventId = parseInt(eventId, 10);
+
+    const data = await models.EventQuota.findOne({
+      where: {
+        eventId
+      }
+    });
+
+    return data;
+  }
+
+  async addEventQuota(payload, transaction) {
+    const data = await models.EventQuota.create(
+      {
+        ...payload
+      },
+      { transaction }
+    );
+
+    return data;
+  }
+
+  async updateEventQuota(id, payload, transaction) {
+    await models.EventQuota.update(
+      { ...payload },
+      { where: { id }, transaction }
+    );
+  }
+
+  async createEventBenefit(data, transaction) {
+    const eventBenefit = await models.EventBenefit.bulkCreate(data, {
+      transaction,
+      returning: true
+    });
+
+    return eventBenefit;
+  }
+
+  async deleteEventBenefit(eventId, transaction) {
+    eventId = parseInt(eventId, 10);
+
+    await models.EventBenefit.destroy({
+      where: { eventId },
+      transaction
+    });
+  }
+
+  async addUserToEvent(eventId, userId, playerPosition, transaction) {
+    await models.EventUser.create(
+      {
+        eventId,
+        userId,
+        playerPosition
+      },
+      { transaction }
+    );
+  }
+
+  async findUserEventByEventIdAndPlayerPosition(eventId, playerPosition) {
+    eventId = parseInt(eventId, 10);
+
+    const data = await models.EventUser.findAll({
+      where: {
+        eventId,
+        playerPosition
+      }
+    });
+
+    return data;
+  }
+
+  async findEventUserByEventIdAndUserId(eventId, userId) {
+    const data = await models.EventUser.findOne({
+      where: {
+        eventId,
+        userId
+      }
+    });
+
+    if (!data) {
+      return null;
+    }
+
+    return data.toJSON();
+  }
+
+  async removeUserOfEvent(eventId, userId, transaction) {
+    eventId = parseInt(eventId, 10);
+    userId = parseInt(userId, 10);
+
+    await models.EventUser.destroy({
+      where: {
+        eventId,
+        userId
+      },
+      transaction
+    });
   }
 }
 
