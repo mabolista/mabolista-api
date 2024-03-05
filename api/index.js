@@ -6,11 +6,6 @@ const swaggerUi = require('swagger-ui-express');
 const { createServer } = require('http');
 const router = require('../route/index');
 const apiDocumentation = require('../apidocs.json');
-const allowCors = require('../shared-v1/utils/handleCors');
-const {
-  maxPageSizeValidation
-} = require('../middleware/pagination/paginationValidation');
-const { getAllEvent } = require('../modules/event/event.controller');
 
 const app = express();
 
@@ -35,9 +30,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/api/events', maxPageSizeValidation, allowCors(getAllEvent));
-
-// app.use('/api', allowCors(router));
+app.use('/api', router);
 
 const server = createServer(app);
 

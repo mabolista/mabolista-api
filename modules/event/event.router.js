@@ -22,7 +22,6 @@ const {
   createEventValidation,
   editEventValidation
 } = require('../../middleware/validations/eventValidation');
-const allowCors = require('../../shared-v1/utils/handleCors');
 
 const router = express.Router();
 
@@ -62,7 +61,7 @@ router.delete(
 // End of Internal API Side Router
 
 // Start of Public API Side Router
-router.get('/events', maxPageSizeValidation, allowCors(getAllEvent));
+router.get('/events', maxPageSizeValidation, getAllEvent);
 router.get('/events/:id', getEventById);
 router.post('/events/join-event', authenticated, userJoinToEvent);
 router.delete('/events/left-event', authenticated, userLeftEvent);
