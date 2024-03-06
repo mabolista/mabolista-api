@@ -32,8 +32,6 @@ const app = express();
 
 app.use(cors());
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
-
 dotenv.config();
 
 // parse requests of content-type - application/json
@@ -44,14 +42,15 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/api', router);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
+
 // simple route
 app.get('/', (req, res) => {
   res.json({
     message: 'Mabolista simple route'
   });
 });
-
-app.use('/api', router);
 
 const server = createServer(app);
 

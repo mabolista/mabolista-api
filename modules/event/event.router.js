@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const {
   userAdminAuthenticated,
   authenticated
@@ -25,7 +24,6 @@ const {
 } = require('../../middleware/validations/eventValidation');
 
 const router = express.Router();
-router.use(cors());
 
 // Start of Internal API Side Router
 router.get(
