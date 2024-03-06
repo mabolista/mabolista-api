@@ -42,7 +42,8 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api', router);
+app.use('/api', cors(), router);
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
 
 // simple route
