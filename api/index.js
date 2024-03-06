@@ -9,15 +9,13 @@ const apiDocumentation = require('../apidocs.json');
 
 const app = express();
 
-const corsOptions = [
-  cors({
-    origin: '*',
-    methods: '*',
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  })
-];
-app.use(corsOptions);
+const corsOptions = {
+  origin: '*',
+  methods: '*',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+app.use(cors(corsOptions));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
 
