@@ -30,7 +30,18 @@ const app = express();
 // };
 // app.use(cors(corsOptions));
 
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://127.0.0.1',
+    'http://example.com'
+    // your origins here
+  ],
+  credentials: true,
+  exposedHeaders: ['set-cookie']
+};
+
+app.use(cors(corsOptions));
 
 dotenv.config();
 
@@ -42,7 +53,7 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api', cors(), router);
+app.use('/api', router);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
 
