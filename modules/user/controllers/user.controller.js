@@ -54,7 +54,29 @@ class UserController {
     }
   }
 
-  // TODO: fixing bug on user admin to create new controller handle get user by id from params not from the token
+  async getMabolismById(req, res) {
+    try {
+      const data = await UserService.findMabolismById(req);
+
+      return res
+        .status(200)
+        .json(responseData(200, 'Berhasil mendapatkan data user', null, data));
+    } catch (error) {
+      console.error(error.stack);
+
+      return res
+        .status(500)
+        .json(
+          responseData(
+            errorCode.INTENAL_SERVER_ERROR,
+            errorStatusCode.INTERNAL_SERVER_ERROR,
+            error,
+            null
+          )
+        );
+    }
+  }
+
   async getUserById(req, res) {
     try {
       const data = await UserService.findUserById(req);
