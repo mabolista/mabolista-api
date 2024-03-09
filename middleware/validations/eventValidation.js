@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 const Joi = require('joi');
 const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
-const { findBenefitById } = require('../../modules/benefit/benefits.service');
+const BenefitRepository = require('../../modules/benefit/repositories/benefits.repository');
 const AppError = require('../../shared-v1/helpers/AppError');
 const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 
@@ -102,7 +102,9 @@ const createEventValidation = async (req, res, next) => {
     }
 
     const checkBenefit = await benefitIds.map(async (benefitId) => {
-      const benefit = await findBenefitById(parseInt(benefitId, 10));
+      const benefit = await BenefitRepository.findBenefitById(
+        parseInt(benefitId, 10)
+      );
       return benefit;
     });
 
@@ -228,7 +230,9 @@ const editEventValidation = async (req, res, next) => {
     }
 
     const checkBenefit = await benefitIds.map(async (benefitId) => {
-      const benefit = await findBenefitById(parseInt(benefitId, 10));
+      const benefit = await BenefitRepository.findBenefitById(
+        parseInt(benefitId, 10)
+      );
       return benefit;
     });
 

@@ -5,9 +5,23 @@ const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 
 const maxPageSizeValidation = (req, res, next) => {
   try {
-    const { pageSize } = req.query;
+    const { page, pageSize } = req.query;
 
-    // TODO: Handle bad request when no pageSize and page request query if (!pageSize || !page)
+    if (!page || !pageSize) {
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_USER_INPUT,
+        'page and pageSize must be defined on params'
+      );
+    }
+
+    if (page < 0) {
+      throw new AppError(
+        errorCode.BAD_REQUEST,
+        errorStatusCode.BAD_USER_INPUT,
+        `page can't be less than 0`
+      );
+    }
 
     if (pageSize > 25) {
       throw new AppError(

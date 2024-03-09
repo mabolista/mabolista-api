@@ -1,8 +1,12 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const { jwtDecode } = require('jwt-decode');
-const { findUserById } = require('../../modules/user/user.service');
-const { findEmployeeById } = require('../../modules/employee/employee.service');
+const {
+  findUserById
+} = require('../../modules/user/repositories/user.repository');
+const {
+  findEmployeeById
+} = require('../../modules/employee/repositories/employee.repository');
 
 dotenv.config();
 

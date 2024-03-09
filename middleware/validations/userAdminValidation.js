@@ -2,15 +2,9 @@
 const Joi = require('joi');
 const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
 const { passwordCompare } = require('../../shared-v1/helpers/passwordHelper');
-const {
-  findEmployeeByEmail,
-  findEmployeeByEmailGetPassword,
-  findEmployeeById
-} = require('../../modules/employee/employee.service');
+const EmployeeRepository = require('../../modules/employee/repositories/employee.repository');
 const AppError = require('../../shared-v1/helpers/AppError');
 const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
-
-const errorResponse = {};
 
 const userAdminRegisterValidation = async (req, res, next) => {
   try {
@@ -50,7 +44,7 @@ const userAdminRegisterValidation = async (req, res, next) => {
       );
     }
 
-    const userAdminEmail = await findEmployeeByEmail(email);
+    const userAdminEmail = await EmployeeRepository.findEmployeeByEmail(email);
 
     if (userAdminEmail) {
       throw new AppError(
@@ -115,7 +109,8 @@ const userAdminLoginValidation = async (req, res, next) => {
       );
     }
 
-    const employee = await findEmployeeByEmailGetPassword(email);
+    const employee =
+      await EmployeeRepository.findEmployeeByEmailGetPassword(email);
 
     if (employee === null) {
       throw new AppError(
@@ -198,7 +193,7 @@ const editUserAdminValidation = async (req, res, next) => {
       );
     }
 
-    const userEmail = await findEmployeeByEmail(email);
+    const userEmail = await EmployeeRepository.findEmployeeByEmail(email);
 
     if (!userEmail) {
       return next();
@@ -239,7 +234,7 @@ const currentUserAdminValidation = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const user = await findEmployeeById(id);
+    const user = await EmployeeRepository.findEmployeeById(id);
 
     if (user === null) {
       throw new AppError(
