@@ -6,16 +6,7 @@ const {
 const {
   maxPageSizeValidation
 } = require('../../../middleware/pagination/paginationValidation');
-const {
-  getAllEvent,
-  addNewEvent,
-  editEvent,
-  removeEvent,
-  userJoinToEvent,
-  userLeftEvent,
-  userJoinToEventByAdmin,
-  userLeftEventByAdmin
-} = require('../controllers/event.controller');
+const EventController = require('../controllers/event.controller');
 const { getEventById } = require('../controllers/event.controller');
 const { upload } = require('../../../middleware/file/multer');
 const {
@@ -30,7 +21,7 @@ router.get(
   '/admin/events',
   userAdminAuthenticated,
   maxPageSizeValidation,
-  getAllEvent
+  EventController.getAllEvent
 );
 router.get('/admin/events/:id', userAdminAuthenticated, getEventById);
 router.post(
@@ -38,33 +29,45 @@ router.post(
   userAdminAuthenticated,
   upload.single('image'),
   createEventValidation,
-  addNewEvent
+  EventController.addNewEvent
 );
 router.put(
   '/admin/events/:id',
   userAdminAuthenticated,
   upload.single('image'),
   editEventValidation,
-  editEvent
+  EventController.editEvent
 );
-router.delete('/admin/events/:id', userAdminAuthenticated, removeEvent);
+router.delete(
+  '/admin/events/:id',
+  userAdminAuthenticated,
+  EventController.removeEvent
+);
 router.post(
   '/admin/event/join-event',
   userAdminAuthenticated,
-  userJoinToEventByAdmin
+  EventController.userJoinToEventByAdmin
 );
 router.delete(
   '/admin/event/left-event',
   userAdminAuthenticated,
-  userLeftEventByAdmin
+  EventController.userLeftEventByAdmin
 );
 // End of Internal API Side Router
 
 // Start of Public API Side Router
-router.get('/events', maxPageSizeValidation, getAllEvent);
+router.get('/events', maxPageSizeValidation, EventController.getAllEvent);
 router.get('/events/:id', getEventById);
-router.post('/events/join-event', authenticated, userJoinToEvent);
-router.delete('/events/left-event', authenticated, userLeftEvent);
+router.post(
+  '/events/join-event',
+  authenticated,
+  EventController.userJoinToEvent
+);
+router.delete(
+  '/events/left-event',
+  authenticated,
+  EventController.userLeftEvent
+);
 // End of Public API Side Router
 
 module.exports = router;
