@@ -1,11 +1,7 @@
 /* eslint-disable consistent-return */
 const Joi = require('joi');
 const { responseData } = require('../../shared-v1/helpers/responseDataHelper');
-const {
-  findUserByEmail,
-  findUserByEmailGetPassword,
-  findUserById
-} = require('../../modules/user/repositories/user.repository');
+const UserRepository = require('../../modules/user/repositories/user.repository');
 const { passwordCompare } = require('../../shared-v1/helpers/passwordHelper');
 const { errorCode, errorStatusCode } = require('../../shared-v1/constants');
 const AppError = require('../../shared-v1/helpers/AppError');
@@ -61,7 +57,7 @@ const registerValidation = async (req, res, next) => {
       );
     }
 
-    const userEmail = await findUserByEmail(email);
+    const userEmail = await UserRepository.findUserByEmail(email);
 
     if (userEmail) {
       throw new AppError(
@@ -134,7 +130,7 @@ const loginValidation = async (req, res, next) => {
       );
     }
 
-    const user = await findUserByEmailGetPassword(email);
+    const user = await UserRepository.findUserByEmailGetPassword(email);
 
     if (user === null) {
       throw new AppError(
@@ -224,7 +220,7 @@ const editUserValidation = async (req, res, next) => {
       );
     }
 
-    const userEmail = await findUserByEmail(email);
+    const userEmail = await UserRepository.findUserByEmail(email);
 
     if (!userEmail) {
       return next();
@@ -265,7 +261,7 @@ const currentUserValidation = async (req, res, next) => {
   try {
     const { id } = decodeJwt(req.headers.authorization);
 
-    const user = await findUserById(id);
+    const user = await UserRepository.findUserById(id);
 
     if (user === null) {
       throw new AppError(
