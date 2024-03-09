@@ -8,6 +8,10 @@
         {
             "url": "http://localhost:8080",
             "description": "Localhost server"
+        },
+        {
+            "url": "https://staging-mabolista.vercel.app/api/",
+            "description": "Staging server"
         }
     ],
     "components": {
