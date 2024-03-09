@@ -30,7 +30,6 @@ class UserService {
   }
 
   async findMabolismById(request) {
-    console.log('helloooo ', request);
     const { id } = request.params;
 
     const user = await UserRepository.findUserById(id);
