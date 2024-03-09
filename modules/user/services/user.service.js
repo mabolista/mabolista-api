@@ -29,6 +29,23 @@ class UserService {
     return users;
   }
 
+  async findMabolismById(request) {
+    console.log('helloooo ', request);
+    const { id } = request.params;
+
+    const user = await UserRepository.findUserById(id);
+
+    if (user === null) {
+      throw new AppError(
+        errorCode.NOT_FOUND,
+        errorStatusCode.BAD_DATA_VALIDATION,
+        'User tidak ditemukan'
+      );
+    }
+
+    return new UserDTOResponse(user);
+  }
+
   async findUserById(request) {
     const { id } = decodeJwt(request.headers.authorization);
 

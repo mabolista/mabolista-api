@@ -52,8 +52,7 @@ router.get(
 router.get(
   '/admin/users/:id',
   userAdminAuthenticated,
-  currentUserValidation,
-  UserController.getUserById
+  UserController.getMabolismById
 );
 router.delete(
   '/admin/users/:id',
