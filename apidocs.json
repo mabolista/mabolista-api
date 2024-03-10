@@ -2,7 +2,11 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Mabolista API",
-        "version": "1.0"
+        "version": "1.0",
+        "contact": {
+            "name": "API Support",
+            "email": "tech.mabolista@gmail.com"
+        }
     },
     "servers": [
         {
