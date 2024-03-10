@@ -7,9 +7,16 @@ const { createServer } = require('http');
 const router = require('../route/index');
 const apiDocumentation = require('../apidocs.json');
 
+const CSS_URL =
+  'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css';
+
 const app = express();
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(apiDocumentation, { customCssUrl: CSS_URL })
+);
 
 dotenv.config();
 
