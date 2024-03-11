@@ -6,8 +6,12 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8080",
+            "url": "http://localhost:8080/api",
             "description": "Localhost server"
+        },
+        {
+            "url": "https://staging-mabolista.vercel.app/api",
+            "description": "Staging server"
         }
     ],
     "components": {
@@ -38,9 +42,6 @@
                     "imageUrl": {
                         "type": "string"
                     },
-                    "imagePublicId": {
-                        "type": "string"
-                    },
                     "createdAt": {
                         "type": "string"
                     },
@@ -51,37 +52,29 @@
                         "type": "string",
                         "nullable": true,
                         "example": null
-                    },
-                    "EventBenefit": {
-                        "$ref": "#/components/schemas/EventBenefit"
                     }
                 }
             },
-            "BenefitModel": {
+            "Employee": {
                 "type": "object",
                 "properties": {
                     "id": {
                         "type": "integer"
                     },
-                    "name": {
+                    "fullname": {
                         "type": "string"
                     },
-                    "imageUrl": {
-                        "type": "string"
-                    },
-                    "imagePublicId": {
+                    "email": {
                         "type": "string"
                     },
                     "createdAt": {
                         "type": "string"
                     },
-                    "updatedAt": {
+                    "updated": {
                         "type": "string"
                     },
                     "deletedAt": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": null
+                        "type": "string"
                     }
                 }
             },
@@ -130,80 +123,10 @@
                             "$ref": "#/components/schemas/Benefit"
                         }
                     },
-                    "playerQty": {
-                        "type": "integer"
-                    },
-                    "keeperQty": {
-                        "type": "integer"
-                    },
-                    "playerAvailableQty": {
-                        "type": "integer"
-                    },
-                    "keeperAvailableQty": {
-                        "type": "integer"
-                    },
-                    "createdAt": {
-                        "type": "string"
-                    },
-                    "updatedAt": {
-                        "type": "string"
-                    },
-                    "deletedAt": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": null
-                    }
-                }
-            },
-            "EventDetail": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "imageUrl": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "location": {
-                        "type": "string"
-                    },
-                    "gmapsUrl": {
-                        "type": "string"
-                    },
-                    "notes": {
-                        "type": "string"
-                    },
-                    "playerPrice": {
-                        "type": "string"
-                    },
-                    "keeperPrice": {
-                        "type": "string"
-                    },
-                    "eventDate": {
-                        "type": "string"
-                    },
-                    "startTime": {
-                        "type": "string"
-                    },
-                    "endTime": {
-                        "type": "string"
-                    },
                     "users": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/Attendee"
-                        }
-                    },
-                    "benefits": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Benefit"
                         }
                     },
                     "playerQty": {
@@ -216,109 +139,6 @@
                         "type": "integer"
                     },
                     "keeperAvailableQty": {
-                        "type": "integer"
-                    },
-                    "createdAt": {
-                        "type": "string"
-                    },
-                    "updatedAt": {
-                        "type": "string"
-                    },
-                    "deletedAt": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": null
-                    }
-                }
-            },
-            "EventDetailAdmin": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "imageUrl": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "location": {
-                        "type": "string"
-                    },
-                    "gmapsUrl": {
-                        "type": "string"
-                    },
-                    "notes": {
-                        "type": "string"
-                    },
-                    "playerPrice": {
-                        "type": "string"
-                    },
-                    "keeperPrice": {
-                        "type": "string"
-                    },
-                    "eventDate": {
-                        "type": "string"
-                    },
-                    "startTime": {
-                        "type": "string"
-                    },
-                    "endTime": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string"
-                    },
-                    "updatedAt": {
-                        "type": "string"
-                    },
-                    "deletedAt": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": null
-                    },
-                    "benefits": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/BenefitModel"
-                        }
-                    },
-                    "users": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Attendee"
-                        }
-                    },
-                    "eventQuota": {
-                        "type": "object",
-                        "properties": {
-                            "playerQty": {
-                                "type": "integer"
-                            },
-                            "keeperQty": {
-                                "type": "integer"
-                            },
-                            "playerAvailableQty": {
-                                "type": "integer"
-                            },
-                            "keeperAvailableQty": {
-                                "type": "integer"
-                            }
-                        }
-                    }
-                }
-            },
-            "EventBenefit": {
-                "type": "object",
-                "properties": {
-                    "eventId": {
-                        "type": "integer"
-                    },
-                    "benefitId": {
                         "type": "integer"
                     },
                     "createdAt": {
@@ -338,21 +158,51 @@
                 "type": "object",
                 "properties": {
                     "currentPage": {
-                        "type": "string",
-                        "example": "1"
+                        "type": "integer",
+                        "example": 0
                     },
                     "pageSize": {
-                        "type": "string",
-                        "example": "25"
+                        "type": "integer",
+                        "example": 10
                     },
                     "total": {
-                        "type": "string",
-                        "description": "ini harusnya gini",
-                        "example": "100"
+                        "type": "integer",
+                        "example": 100
                     },
                     "totalPage": {
+                        "type": "integer",
+                        "example": 10
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "imageUrl": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updated": {
+                        "type": "string"
+                    },
+                    "deletedAt": {
                         "type": "string",
-                        "example": "50"
+                        "nullable": true,
+                        "example": null
                     }
                 }
             }
@@ -403,7 +253,7 @@
     "paths": {
         "/admin/detail/{id}": {
             "get": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Get admin detail data",
                 "security": [
                     {
                         "JWT": []
@@ -445,28 +295,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "fullname": {
-                                                    "type": "string"
-                                                },
-                                                "email": {
-                                                    "type": "string"
-                                                },
-                                                "createdAt": {
-                                                    "type": "string"
-                                                },
-                                                "updatedAt": {
-                                                    "type": "string"
-                                                },
-                                                "deletedAt": {
-                                                    "type": "string",
-                                                    "example": null
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/Employee"
                                         }
                                     }
                                 }
@@ -509,12 +338,12 @@
         },
         "/admin/login": {
             "post": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Admin login to cms using their email and password",
                 "tags": [
                     "Admin-Authentication"
                 ],
                 "requestBody": {
-                    "description": "The request body for admin login",
+                    "description": "Must login using registered email and password",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -617,12 +446,12 @@
         },
         "/admin/register": {
             "post": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Register of Admin User",
                 "tags": [
                     "Admin-User"
                 ],
                 "requestBody": {
-                    "description": "The request body for admin login",
+                    "description": "Users should input their data such as fullname, email, and password",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -672,32 +501,8 @@
                                         "data": {
                                             "type": "object",
                                             "properties": {
-                                                "newUserAdmin": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer"
-                                                        },
-                                                        "fullname": {
-                                                            "type": "string"
-                                                        },
-                                                        "email": {
-                                                            "type": "string"
-                                                        },
-                                                        "password": {
-                                                            "type": "string"
-                                                        },
-                                                        "createdAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "updatedAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "deletedAt": {
-                                                            "type": "string",
-                                                            "example": null
-                                                        }
-                                                    }
+                                                "employee": {
+                                                    "$ref": "#/components/schemas/Employee"
                                                 },
                                                 "token": {
                                                     "type": "string"
@@ -745,7 +550,7 @@
         },
         "/admin/benefits": {
             "get": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Get all benefit on admin side",
                 "tags": [
                     "Admin-Benefit"
                 ],
@@ -773,7 +578,7 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "content": {
                             "application/json": {
@@ -799,7 +604,7 @@
                                                 "benefits": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/BenefitModel"
+                                                        "$ref": "#/components/schemas/Benefit"
                                                     }
                                                 },
                                                 "meta": {
@@ -933,7 +738,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/BenefitModel"
+                                            "$ref": "#/components/schemas/Benefit"
                                         }
                                     }
                                 }
@@ -1007,7 +812,7 @@
         },
         "/admin/benefits/{id}": {
             "get": {
-                "description": "Will added after fixing get user by id on the admin side",
+                "description": "Get benefit detail on the admin side",
                 "tags": [
                     "Admin-Benefit"
                 ],
@@ -1049,7 +854,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/BenefitModel"
+                                            "$ref": "#/components/schemas/Benefit"
                                         }
                                     }
                                 }
@@ -1219,7 +1024,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/BenefitModel"
+                                            "$ref": "#/components/schemas/Benefit"
                                         }
                                     }
                                 }
@@ -1364,7 +1169,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/BenefitModel"
+                                            "$ref": "#/components/schemas/Benefit"
                                         }
                                     }
                                 }
@@ -1469,7 +1274,7 @@
         },
         "/admin/events": {
             "get": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Get all event list on the admin side",
                 "tags": [
                     "Admin-Event"
                 ],
@@ -1497,7 +1302,7 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "content": {
                             "application/json": {
@@ -1601,7 +1406,7 @@
                 }
             },
             "post": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Add a new event",
                 "tags": [
                     "Admin-Event"
                 ],
@@ -1611,7 +1416,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "The request body for login",
+                    "description": "The request body of Event",
                     "required": true,
                     "content": {
                         "multipart/form-data": {
@@ -1645,7 +1450,8 @@
                                         "type": "integer"
                                     },
                                     "eventDate": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "YYYY-MM-DD"
                                     },
                                     "startTime": {
                                         "type": "string"
@@ -1664,7 +1470,7 @@
                                     }
                                 },
                                 "required": [
-                                    "name",
+                                    "title",
                                     "image",
                                     "description",
                                     "location",
@@ -1679,6 +1485,12 @@
                                     "keeperQty",
                                     "benefitIds"
                                 ]
+                            },
+                            "encoding": {
+                                "benefitIds": {
+                                    "style": "form",
+                                    "explode": true
+                                }
                             }
                         }
                     }
@@ -1705,7 +1517,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetailAdmin"
+                                            "$ref": "#/components/schemas/Event"
                                         }
                                     }
                                 }
@@ -1779,7 +1591,7 @@
         },
         "/admin/events/{id}": {
             "get": {
-                "description": "Will added after fixing get user by id on the admin side",
+                "description": "Get event detail on the admin side",
                 "tags": [
                     "Admin-Event"
                 ],
@@ -1821,7 +1633,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetail"
+                                            "$ref": "#/components/schemas/Event"
                                         }
                                     }
                                 }
@@ -1924,7 +1736,7 @@
                 }
             },
             "put": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Update existing event",
                 "tags": [
                     "Admin-Event"
                 ],
@@ -1941,11 +1753,11 @@
                             "type": "integer"
                         },
                         "required": true,
-                        "description": "an benefit id"
+                        "description": "an event id"
                     }
                 ],
                 "requestBody": {
-                    "description": "The request body for login",
+                    "description": "The request body for update event",
                     "required": true,
                     "content": {
                         "multipart/form-data": {
@@ -1998,7 +1810,7 @@
                                     }
                                 },
                                 "required": [
-                                    "name",
+                                    "title",
                                     "image",
                                     "description",
                                     "location",
@@ -2013,6 +1825,12 @@
                                     "keeperQty",
                                     "benefitIds"
                                 ]
+                            },
+                            "encoding": {
+                                "benefitIds": {
+                                    "style": "form",
+                                    "explode": true
+                                }
                             }
                         }
                     }
@@ -2039,7 +1857,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetailAdmin"
+                                            "$ref": "#/components/schemas/Event"
                                         }
                                     }
                                 }
@@ -2142,7 +1960,7 @@
                 }
             },
             "delete": {
-                "description": "Delete event",
+                "description": "Delete an existing event",
                 "tags": [
                     "Admin-Event"
                 ],
@@ -2159,7 +1977,7 @@
                             "type": "integer"
                         },
                         "required": true,
-                        "description": "an benefit id"
+                        "description": "an event id"
                     }
                 ],
                 "responses": {
@@ -2184,7 +2002,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetail"
+                                            "$ref": "#/components/schemas/Event"
                                         }
                                     }
                                 }
@@ -2287,9 +2105,9 @@
                 }
             }
         },
-        "/admin/events/join-event": {
+        "/admin/event/join-event": {
             "post": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Join user to an event by admin",
                 "tags": [
                     "Admin-Event"
                 ],
@@ -2299,10 +2117,10 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "The request body for login",
+                    "description": "The request body for joining the event by admin",
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -2326,7 +2144,7 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "content": {
                             "application/json": {
@@ -2347,7 +2165,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetailAdmin"
+                                            "$ref": "#/components/schemas/Event"
                                         }
                                     }
                                 }
@@ -2419,9 +2237,9 @@
                 }
             }
         },
-        "/admin/events/left-event": {
+        "/admin/event/left-event": {
             "delete": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Leave user of an event by admin",
                 "tags": [
                     "Admin-Event"
                 ],
@@ -2431,10 +2249,10 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "The request body for login",
+                    "description": "The request body for leave event",
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -2454,7 +2272,7 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "content": {
                             "application/json": {
@@ -2475,7 +2293,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetailAdmin"
+                                            "$ref": "#/components/schemas/Event"
                                         }
                                     }
                                 }
@@ -2549,7 +2367,7 @@
         },
         "/admin/users": {
             "get": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Get users of mabolista list on the admin side",
                 "tags": [
                     "Admin-Mabolism"
                 ],
@@ -2603,33 +2421,7 @@
                                                 "users": {
                                                     "type": "array",
                                                     "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer"
-                                                            },
-                                                            "name": {
-                                                                "type": "string"
-                                                            },
-                                                            "email": {
-                                                                "type": "string"
-                                                            },
-                                                            "imageUrl": {
-                                                                "type": "string"
-                                                            },
-                                                            "phoneNumber": {
-                                                                "type": "string"
-                                                            },
-                                                            "createdAt": {
-                                                                "type": "string"
-                                                            },
-                                                            "updatedAt": {
-                                                                "type": "string"
-                                                            },
-                                                            "deletedAt": {
-                                                                "type": "string",
-                                                                "example": null
-                                                            }
-                                                        }
+                                                        "$ref": "#/components/schemas/User"
                                                     }
                                                 },
                                                 "meta": {
@@ -2678,7 +2470,7 @@
         },
         "/admin/users/{id}": {
             "get": {
-                "description": "Will added after fixing get user by id on the admin side",
+                "description": "Get user detail on the admin side",
                 "tags": [
                     "Admin-Mabolism"
                 ],
@@ -2695,7 +2487,7 @@
                             "type": "integer"
                         },
                         "required": true,
-                        "description": "an user id"
+                        "description": "An user id"
                     }
                 ],
                 "responses": {
@@ -2720,117 +2512,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetail"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "BAD REQUEST",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "items": {},
-                                    "properties": {
-                                        "status": {
-                                            "type": "integer",
-                                            "example": 404
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "errors": {
-                                            "type": "object",
-                                            "example": {
-                                                "code": 404,
-                                                "status": "BAD_DATA_VALIDATION"
-                                            }
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "example": null
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete user mabolism",
-                "tags": [
-                    "Admin-Mabolism"
-                ],
-                "security": [
-                    {
-                        "JWT": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "required": true,
-                        "description": "an user id"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "items": {},
-                                    "properties": {
-                                        "status": {
-                                            "type": "integer",
-                                            "example": 200
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "errors": {
-                                            "type": "array",
-                                            "nullable": true,
-                                            "example": null
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "name": {
-                                                    "type": "string"
-                                                },
-                                                "email": {
-                                                    "type": "string"
-                                                },
-                                                "imageUrl": {
-                                                    "type": "string"
-                                                },
-                                                "phoneNumber": {
-                                                    "type": "string"
-                                                },
-                                                "createdAt": {
-                                                    "type": "string"
-                                                },
-                                                "updatedAt": {
-                                                    "type": "string"
-                                                },
-                                                "deletedAt": {
-                                                    "type": "string",
-                                                    "example": null
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/User"
                                         }
                                     }
                                 }
@@ -2873,7 +2555,7 @@
         },
         "/events": {
             "get": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Get all event list",
                 "tags": [
                     "Public-Event"
                 ],
@@ -2965,13 +2647,44 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {},
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 401
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "code": 401,
+                                                "status": "BAD_DATA_VALIDATION"
+                                            }
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
         "/events/{id}": {
             "get": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Get event detail",
                 "tags": [
                     "Public-Event"
                 ],
@@ -3008,7 +2721,69 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetail"
+                                            "$ref": "#/components/schemas/Event"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {},
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "code": 400,
+                                                "status": "BAD_DATA_VALIDATION"
+                                            }
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {},
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 401
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "code": 401,
+                                                "status": "BAD_DATA_VALIDATION"
+                                            }
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": null
                                         }
                                     }
                                 }
@@ -3051,7 +2826,7 @@
         },
         "/events/join-event": {
             "post": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Join to an event",
                 "tags": [
                     "Public-Event"
                 ],
@@ -3061,7 +2836,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "The request body for join the event, client needs to input playerPosition by 'GK' or 'P'. Gk means Goal Keeper and P means Player ",
+                    "description": "The request body for joining to an event",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -3094,7 +2869,7 @@
                                     "properties": {
                                         "status": {
                                             "type": "integer",
-                                            "example": 200
+                                            "example": 201
                                         },
                                         "message": {
                                             "type": "string"
@@ -3105,122 +2880,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "title": {
-                                                    "type": "string"
-                                                },
-                                                "imageUrl": {
-                                                    "type": "string"
-                                                },
-                                                "imagePublicId": {
-                                                    "type": "string"
-                                                },
-                                                "description": {
-                                                    "type": "string"
-                                                },
-                                                "location": {
-                                                    "type": "string"
-                                                },
-                                                "gmapsUrl": {
-                                                    "type": "string"
-                                                },
-                                                "notes": {
-                                                    "type": "string"
-                                                },
-                                                "playerPrice": {
-                                                    "type": "string"
-                                                },
-                                                "keeperPrice": {
-                                                    "type": "string"
-                                                },
-                                                "eventDate": {
-                                                    "type": "string"
-                                                },
-                                                "startTime": {
-                                                    "type": "string"
-                                                },
-                                                "endTime": {
-                                                    "type": "string"
-                                                },
-                                                "createdAt": {
-                                                    "type": "string"
-                                                },
-                                                "updatedAt": {
-                                                    "type": "string"
-                                                },
-                                                "deletedAt": {
-                                                    "type": "string",
-                                                    "example": null
-                                                },
-                                                "benefits": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/Benefit"
-                                                    }
-                                                },
-                                                "users": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer"
-                                                            },
-                                                            "name": {
-                                                                "type": "string"
-                                                            },
-                                                            "EventUser": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "eventId": {
-                                                                        "type": "integer"
-                                                                    },
-                                                                    "userId": {
-                                                                        "type": "integer"
-                                                                    },
-                                                                    "playerPosition": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "createdAt": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "updatedAt": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "deletedAt": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "event_id": {
-                                                                        "type": "integer"
-                                                                    },
-                                                                    "user_id": {
-                                                                        "type": "integer"
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "eventQuota": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "playerQty": {
-                                                            "type": "integer"
-                                                        },
-                                                        "keeperQty": {
-                                                            "type": "integer"
-                                                        },
-                                                        "playerAvailableQty": {
-                                                            "type": "integer"
-                                                        },
-                                                        "keeperAvailableQty": {
-                                                            "type": "integer"
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/Event"
                                         }
                                     }
                                 }
@@ -3258,7 +2918,7 @@
                             }
                         }
                     },
-                    "404": {
+                    "401": {
                         "description": "BAD REQUEST",
                         "content": {
                             "application/json": {
@@ -3268,7 +2928,7 @@
                                     "properties": {
                                         "status": {
                                             "type": "integer",
-                                            "example": 404
+                                            "example": 401
                                         },
                                         "message": {
                                             "type": "string"
@@ -3276,7 +2936,7 @@
                                         "errors": {
                                             "type": "object",
                                             "example": {
-                                                "code": 404,
+                                                "code": 401,
                                                 "status": "BAD_DATA_VALIDATION"
                                             }
                                         },
@@ -3294,7 +2954,7 @@
         },
         "/events/left-event": {
             "delete": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Leave of an event",
                 "tags": [
                     "Public-Event"
                 ],
@@ -3304,7 +2964,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "The request body for leave the event, client needs to input eventId ",
+                    "description": "The request body for leave event",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -3333,7 +2993,7 @@
                                     "properties": {
                                         "status": {
                                             "type": "integer",
-                                            "example": 200
+                                            "example": 201
                                         },
                                         "message": {
                                             "type": "string"
@@ -3344,122 +3004,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "title": {
-                                                    "type": "string"
-                                                },
-                                                "imageUrl": {
-                                                    "type": "string"
-                                                },
-                                                "imagePublicId": {
-                                                    "type": "string"
-                                                },
-                                                "description": {
-                                                    "type": "string"
-                                                },
-                                                "location": {
-                                                    "type": "string"
-                                                },
-                                                "gmapsUrl": {
-                                                    "type": "string"
-                                                },
-                                                "notes": {
-                                                    "type": "string"
-                                                },
-                                                "playerPrice": {
-                                                    "type": "string"
-                                                },
-                                                "keeperPrice": {
-                                                    "type": "string"
-                                                },
-                                                "eventDate": {
-                                                    "type": "string"
-                                                },
-                                                "startTime": {
-                                                    "type": "string"
-                                                },
-                                                "endTime": {
-                                                    "type": "string"
-                                                },
-                                                "createdAt": {
-                                                    "type": "string"
-                                                },
-                                                "updatedAt": {
-                                                    "type": "string"
-                                                },
-                                                "deletedAt": {
-                                                    "type": "string",
-                                                    "example": null
-                                                },
-                                                "benefits": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/Benefit"
-                                                    }
-                                                },
-                                                "users": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer"
-                                                            },
-                                                            "name": {
-                                                                "type": "string"
-                                                            },
-                                                            "EventUser": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "eventId": {
-                                                                        "type": "integer"
-                                                                    },
-                                                                    "userId": {
-                                                                        "type": "integer"
-                                                                    },
-                                                                    "playerPosition": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "createdAt": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "updatedAt": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "deletedAt": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "event_id": {
-                                                                        "type": "integer"
-                                                                    },
-                                                                    "user_id": {
-                                                                        "type": "integer"
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "eventQuota": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "playerQty": {
-                                                            "type": "integer"
-                                                        },
-                                                        "keeperQty": {
-                                                            "type": "integer"
-                                                        },
-                                                        "playerAvailableQty": {
-                                                            "type": "integer"
-                                                        },
-                                                        "keeperAvailableQty": {
-                                                            "type": "integer"
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/Event"
                                         }
                                     }
                                 }
@@ -3497,7 +3042,7 @@
                             }
                         }
                     },
-                    "404": {
+                    "401": {
                         "description": "BAD REQUEST",
                         "content": {
                             "application/json": {
@@ -3507,7 +3052,7 @@
                                     "properties": {
                                         "status": {
                                             "type": "integer",
-                                            "example": 404
+                                            "example": 401
                                         },
                                         "message": {
                                             "type": "string"
@@ -3515,7 +3060,7 @@
                                         "errors": {
                                             "type": "object",
                                             "example": {
-                                                "code": 404,
+                                                "code": 401,
                                                 "status": "BAD_DATA_VALIDATION"
                                             }
                                         },
@@ -3533,9 +3078,14 @@
         },
         "/login": {
             "post": {
-                "description": "Lorem ipsum dolor sit amet",
+                "description": "Join user to an event by admin",
                 "tags": [
                     "Public-Authentication"
+                ],
+                "security": [
+                    {
+                        "JWT": []
+                    }
                 ],
                 "requestBody": {
                     "description": "The request body for login",
@@ -3561,7 +3111,7 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "content": {
                             "application/json": {
@@ -3635,122 +3185,8 @@
                                 }
                             }
                         }
-                    }
-                }
-            }
-        },
-        "/register": {
-            "post": {
-                "description": "Lorem ipsum dolor sit amet",
-                "tags": [
-                    "Public-User"
-                ],
-                "requestBody": {
-                    "description": "The request body for login",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "phoneNumber": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    },
-                                    "image": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "description": "Image file"
-                                    },
-                                    "confirmPassword": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "name",
-                                    "email",
-                                    "phoneNumber",
-                                    "password",
-                                    "image",
-                                    "confirmPassword"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "items": {},
-                                    "properties": {
-                                        "status": {
-                                            "type": "integer",
-                                            "example": 201
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "errors": {
-                                            "type": "array",
-                                            "nullable": true,
-                                            "example": null
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "user": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer"
-                                                        },
-                                                        "name": {
-                                                            "type": "string"
-                                                        },
-                                                        "email": {
-                                                            "type": "string"
-                                                        },
-                                                        "imageUrl": {
-                                                            "type": "string"
-                                                        },
-                                                        "phoneNumber": {
-                                                            "type": "string"
-                                                        },
-                                                        "createdAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "updatedAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "deletedAt": {
-                                                            "type": "string",
-                                                            "example": null
-                                                        }
-                                                    }
-                                                },
-                                                "token": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     },
-                    "400": {
+                    "401": {
                         "description": "BAD REQUEST",
                         "content": {
                             "application/json": {
@@ -3760,7 +3196,7 @@
                                     "properties": {
                                         "status": {
                                             "type": "integer",
-                                            "example": 400
+                                            "example": 401
                                         },
                                         "message": {
                                             "type": "string"
@@ -3768,7 +3204,7 @@
                                         "errors": {
                                             "type": "object",
                                             "example": {
-                                                "code": 400,
+                                                "code": 401,
                                                 "status": "BAD_DATA_VALIDATION"
                                             }
                                         },
@@ -3786,7 +3222,7 @@
         },
         "/users/detail": {
             "get": {
-                "description": "Get user detail",
+                "description": "Get existing user",
                 "tags": [
                     "Public-User"
                 ],
@@ -3817,33 +3253,38 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "name": {
-                                                    "type": "string"
-                                                },
-                                                "email": {
-                                                    "type": "string"
-                                                },
-                                                "imageUrl": {
-                                                    "type": "string"
-                                                },
-                                                "phoneNumber": {
-                                                    "type": "string"
-                                                },
-                                                "createdAt": {
-                                                    "type": "string"
-                                                },
-                                                "updated": {
-                                                    "type": "string"
-                                                },
-                                                "deletedAt": {
-                                                    "type": "string",
-                                                    "example": null
-                                                }
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {},
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "code": 400,
+                                                "status": "BAD_DATA_VALIDATION"
                                             }
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": null
                                         }
                                     }
                                 }
@@ -3851,7 +3292,7 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "BAD REQUEST",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3869,7 +3310,7 @@
                                             "type": "object",
                                             "example": {
                                                 "code": 401,
-                                                "status": "UNAUTHENTICATED"
+                                                "status": "BAD_DATA_VALIDATION"
                                             }
                                         },
                                         "data": {
@@ -3886,7 +3327,7 @@
         },
         "/users/edit": {
             "put": {
-                "description": "Edit user",
+                "description": "Update existing user",
                 "tags": [
                     "Public-User"
                 ],
@@ -3896,7 +3337,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "The request body for edit user",
+                    "description": "The request body of register",
                     "required": true,
                     "content": {
                         "multipart/form-data": {
@@ -3906,6 +3347,11 @@
                                     "name": {
                                         "type": "string"
                                     },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Image file"
+                                    },
                                     "email": {
                                         "type": "string"
                                     },
@@ -3914,19 +3360,14 @@
                                     },
                                     "password": {
                                         "type": "string"
-                                    },
-                                    "image": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "description": "Image file"
                                     }
                                 },
                                 "required": [
                                     "name",
+                                    "image",
                                     "email",
                                     "phoneNumber",
-                                    "password",
-                                    "image"
+                                    "password"
                                 ]
                             }
                         }
@@ -3954,37 +3395,155 @@
                                             "example": null
                                         },
                                         "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {},
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
                                             "type": "object",
+                                            "example": {
+                                                "code": 400,
+                                                "status": "BAD_DATA_VALIDATION"
+                                            }
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {},
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 401
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "code": 401,
+                                                "status": "BAD_DATA_VALIDATION"
+                                            }
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Register new user",
+                "tags": [
+                    "Public-User"
+                ],
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "The request body of register",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Image file"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "phoneNumber": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "confirmPassword": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "image",
+                                    "email",
+                                    "phoneNumber",
+                                    "password",
+                                    "confirmPassword"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {},
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "nullable": true,
+                                            "example": null
+                                        },
+                                        "data": {
                                             "properties": {
                                                 "user": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer"
-                                                        },
-                                                        "name": {
-                                                            "type": "string"
-                                                        },
-                                                        "email": {
-                                                            "type": "string"
-                                                        },
-                                                        "imageUrl": {
-                                                            "type": "string"
-                                                        },
-                                                        "phoneNumber": {
-                                                            "type": "string"
-                                                        },
-                                                        "createdAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "updatedAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "deletedAt": {
-                                                            "type": "string",
-                                                            "example": null
-                                                        }
-                                                    }
+                                                    "$ref": "#/components/schemas/User"
                                                 },
                                                 "token": {
                                                     "type": "string"
@@ -4028,7 +3587,7 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "BAD REQUEST",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4046,7 +3605,7 @@
                                             "type": "object",
                                             "example": {
                                                 "code": 401,
-                                                "status": "UNAUTHENTICATED"
+                                                "status": "BAD_DATA_VALIDATION"
                                             }
                                         },
                                         "data": {
@@ -4060,11 +3619,11 @@
                     }
                 }
             }
-        }
-    },
-    "security": [
-        {
-            "name": []
-        }
-    ]
+        },
+        "security": [
+            {
+                "name": []
+            }
+        ]
+    }
 }
