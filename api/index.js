@@ -9,11 +9,41 @@ const apiDocumentation = require('../apidocs.json');
 
 const app = express();
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+//   res.setHeader(
+//     'Access-Control-Allow-Methods',
+//     'GET,OPTIONS,PATCH,DELETE,POST,PUT'
+//   );
+//   res.setHeader(
+//     'Access-Control-Allow-Headers',
+//     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+//   );
+//   next();
+// });
+
+// const corsOptions = {
+//   origin: '*',
+//   methods: '*',
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+//   credentials: true
+// };
+// app.use(cors(corsOptions));
+
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://127.0.0.1',
+    'http://example.com'
+    // your origins here
+  ],
+  credentials: true,
+  exposedHeaders: ['set-cookie']
+};
+
+app.use(cors(corsOptions));
 
 dotenv.config();
-
-app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -23,14 +53,16 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/api', router);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
+
 // simple route
 app.get('/', (req, res) => {
   res.json({
     message: 'Mabolista simple route'
   });
 });
-
-app.use('/api', router);
 
 const server = createServer(app);
 
